@@ -60,7 +60,7 @@ To use different version compatible with `renec cluster`, set the `CLUSTER` and 
 For example:
 
 ```bash
-CLUSTER=mainnet ANCHOR_VERSION=0.20.1 make install-deps
+CLUSTER=mainnet ANCHOR_VERSION=0.25.0 make install-deps
 ```
 
 `CLUSTER` can either be `mainnet`, `testnet` or `localnet`. By setting the cluster correctly, the installer will set the corresponding `cli` for program's interaction.
