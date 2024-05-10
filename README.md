@@ -53,7 +53,7 @@ brew install openssl
 make install-deps
 ```
 
-This will install the `anchor` and `solana` cli if needed. Default `solana 1.14.6`, `anchor 0.25.0`
+This will install the `anchor` and `solana` cli if needed. Default `solana 1.14.17`, `anchor 0.25.0`
 
 To use different version compatible with `renec cluster`, set the `CLUSTER` and `ANCHOR_VERSION` environment variables and run the command
 </br>
