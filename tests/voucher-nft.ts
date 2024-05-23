@@ -2,6 +2,7 @@ import * as anchor from '@project-serum/anchor';
 import { Program } from '@project-serum/anchor';
 import { VoucherNft } from '../target/types/voucher_nft';
 import * as assert from 'assert';
+import { pda } from '../sdk/src';
 
 describe('voucher-nft', () => {
     // Configure the client to use the local cluster.
@@ -9,7 +10,8 @@ describe('voucher-nft', () => {
     anchor.setProvider(provider);
 
     const program = anchor.workspace.VoucherNft as Program<VoucherNft>;
-    const [config] = anchor.web3.PublicKey.findProgramAddressSync([Buffer.from('CONFIG')], program.programId);
+    const pdaClass = new pda.PDA(program.programId);
+    const { key: config } = pdaClass.config();
 
     it('Is initialized!', async () => {
         try {

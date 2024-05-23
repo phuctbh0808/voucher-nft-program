@@ -1,6 +1,6 @@
 {
     "scripts": {
-        "lint:fix": "prettier --config .prettierrc */*.ts -w"
+        "lint:fix": "prettier --config .prettierrc */*.ts -w && prettier --config .prettierrc */**/*.ts -w"
     },
     "dependencies": {
         "@project-serum/anchor": "0.25.0",
