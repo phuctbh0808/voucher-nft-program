@@ -2,37 +2,26 @@ import * as anchor from '@project-serum/anchor';
 import { Program } from '@project-serum/anchor';
 import { VoucherNft } from '../target/types/voucher_nft';
 import * as assert from 'assert';
-import { pda } from '../sdk/src';
+import { VoucherNftFixture, VoucherNftFixtureBuilder } from '../sdk/src/voucher-nft-fixture';
+import { NetworkType } from '../sdk/src/types';
 
 describe('voucher-nft', () => {
-    // Configure the client to use the local cluster.
-    const provider = anchor.AnchorProvider.env();
-    anchor.setProvider(provider);
+    let fixture: VoucherNftFixture;
 
-    const program = anchor.workspace.VoucherNft as Program<VoucherNft>;
-    const pdaClass = new pda.PDA(program.programId);
-    const { key: config } = pdaClass.config();
+    before(async () => {
+        const fixtureBuilder = new VoucherNftFixtureBuilder().withNetwork(NetworkType.LocalNet);
+        fixture = await fixtureBuilder.build();
+    });
 
     it('Is initialized!', async () => {
-        try {
-            const tx = await program.methods
-                .initialize()
-                .accounts({
-                    config: config,
-                    admin: provider.publicKey,
-                })
-                .rpc();
-            console.log('Initialize success at ', tx);
-        } catch (error) {
-            console.error(error);
-            throw error;
-        }
+        const { key: config } = fixture.pda.config();
+        const tx = await fixture.initialize();
+        console.log('Initialize success at ', tx);
 
-        // Get the new counter value
-        const configData = await program.account.config.fetch(config);
+        const configData = await fixture.getConfigData();
         assert.equal(
             configData.admin.toBase58(),
-            provider.publicKey.toBase58(),
+            fixture.provider.publicKey.toBase58(),
             'expect admin to be provider.publicKey'
         );
     });
