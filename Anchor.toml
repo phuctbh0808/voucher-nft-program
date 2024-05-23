@@ -1,5 +1,6 @@
 [programs.localnet]
 dapp_starter = "DVGDPtHSpFxBVAmUPtjauNoQkRyDxmZyUCGfWrQi6fKK"
+voucher_nft = "GgYWQNtiG5psgd2ZcVRNBNzCW28wBrhc6ntMMamBuSJU"
 
 [registry]
 url = "https://anchor.projectserum.com"
