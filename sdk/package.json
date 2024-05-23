@@ -1,0 +1,11 @@
+{
+  "name": "sdk",
+  "version": "1.0.0",
+  "description": "SDK for voucher-nft program",
+  "main": "src/index.ts",
+  "author": "phuctbh0808",
+  "license": "MIT",
+  "dependencies": {
+    "@solana-developers/helpers": "^2.3.0"
+  }
+}

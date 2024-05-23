@@ -17,10 +17,10 @@ pub mod dapp_starter {
 }
 
 #[derive(Accounts)]
-pub struct Initialize<'info>{
+pub struct Initialize<'info> {
     #[account(
-        init, 
-        payer = deployer, 
+        init,
+        payer = deployer,
         space = 8 + 8,
     )]
     pub config: Account<'info, Counter>,
@@ -32,10 +32,8 @@ pub struct Initialize<'info>{
 }
 
 #[derive(Accounts)]
-pub struct Increment<'info>{
-    #[account(
-        mut
-    )]
+pub struct Increment<'info> {
+    #[account(mut)]
     pub config: Account<'info, Counter>,
 
     #[account(mut)]
