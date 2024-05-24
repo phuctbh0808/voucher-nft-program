@@ -91,6 +91,11 @@
           "isSigner": false
         },
         {
+          "name": "masterEdition",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
           "name": "tokenMetadataProgram",
           "isMut": false,
           "isSigner": false

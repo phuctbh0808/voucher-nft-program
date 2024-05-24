@@ -1,5 +1,5 @@
 import * as anchor from '@project-serum/anchor';
-import { Metadata } from '@renec-foundation/mpl-token-metadata';
+import { MasterEdition, Metadata } from '@renec-foundation/mpl-token-metadata';
 import { Constants } from './constants';
 export interface PDAInfo {
     key: anchor.web3.PublicKey;
@@ -38,6 +38,14 @@ export class PDA {
 
     metadata = async (mint: anchor.web3.PublicKey): Promise<PDAInfo> => {
         const key = await Metadata.getPDA(mint);
+        return {
+            key,
+            bump: null,
+        };
+    };
+
+    masterEdition = async (mint: anchor.web3.PublicKey): Promise<PDAInfo> => {
+        const key = await MasterEdition.getPDA(mint);
         return {
             key,
             bump: null,

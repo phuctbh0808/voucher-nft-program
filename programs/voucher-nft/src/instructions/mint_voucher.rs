@@ -4,7 +4,7 @@ use crate::states::*;
 use anchor_lang::prelude::*;
 use anchor_spl::associated_token::AssociatedToken;
 use anchor_spl::token::{self, Mint, MintTo, Token, TokenAccount};
-use mpl_token_metadata::instruction::create_metadata_accounts_v2;
+use mpl_token_metadata::instruction::{create_master_edition_v3, create_metadata_accounts_v2};
 use solana_program::program::invoke_signed;
 
 #[derive(Accounts)]
@@ -29,7 +29,7 @@ pub struct MintVoucher<'info> {
         mint::authority = vault.key(),
         mint::freeze_authority = vault.key(),
     )]
-    pub mint: Account<'info, Mint>,
+    pub mint: Box<Account<'info, Mint>>,
 
     #[account(
         init,
@@ -37,11 +37,15 @@ pub struct MintVoucher<'info> {
         associated_token::mint = mint,
         associated_token::authority = vault,
     )]
-    pub vault_token_account: Account<'info, TokenAccount>,
+    pub vault_token_account: Box<Account<'info, TokenAccount>>,
 
     /// CHECK: Token_metadata_program will check this
     #[account(mut)]
     pub metadata_account: AccountInfo<'info>,
+
+    /// CHECK: Token_metadata_program will check this
+    #[account(mut)]
+    pub master_edition: AccountInfo<'info>,
 
     /// CHECK: The RENEC token metadata program
     #[account(
@@ -114,6 +118,35 @@ pub fn handler(ctx: Context<MintVoucher>, seed: String) -> ProgramResult {
         metadata_account_infos.as_slice(),
         &[&[Vault::SEED.as_bytes(), seed.as_bytes(), &[vault.bump]]],
     )?;
+
+    msg!("Creating master edition");
+    let master_edition_infos = vec![
+        ctx.accounts.master_edition.to_account_info(),
+        ctx.accounts.mint.to_account_info(),
+        ctx.accounts.vault.to_account_info(),
+        ctx.accounts.operator.to_account_info(),
+        ctx.accounts.metadata_account.to_account_info(),
+        ctx.accounts.token_metadata_program.to_account_info(),
+        ctx.accounts.token_program.to_account_info(),
+        ctx.accounts.system_program.to_account_info(),
+        ctx.accounts.rent.to_account_info(),
+    ];
+
+    invoke_signed(
+        &create_master_edition_v3(
+            ctx.accounts.token_metadata_program.key(),
+            ctx.accounts.master_edition.key(),
+            ctx.accounts.mint.key(),
+            ctx.accounts.vault.key(),
+            ctx.accounts.vault.key(),
+            ctx.accounts.metadata_account.key(),
+            ctx.accounts.operator.key(),
+            Some(0),
+        ),
+        master_edition_infos.as_slice(),
+        &[&[Vault::SEED.as_bytes(), seed.as_bytes(), &[vault.bump]]],
+    )?;
+    msg!("Master Edition created");
 
     Ok(())
 }

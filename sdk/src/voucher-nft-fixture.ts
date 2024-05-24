@@ -67,6 +67,7 @@ export class VoucherNftFixture {
     async mintVoucher(seed: string, operator: Keypair, mint: Keypair): Promise<string> {
         try {
             const { key: metadataAccount } = await this.pda.metadata(mint.publicKey);
+            const { key: masterEdition } = await this.pda.masterEdition(mint.publicKey);
             const { key: vault } = this.pda.vault(seed);
             const vaultTokenAccount = await token.getAssociatedTokenAddress(mint.publicKey, vault, true);
             const modifyUnitIns = modifyComputeUnitIx();
@@ -76,6 +77,7 @@ export class VoucherNftFixture {
                 tokenMetadataProgram: Constants.TOKEN_METADATA_PROGRAM,
                 vaultTokenAccount,
                 metadataAccount,
+                masterEdition,
                 vault: vault,
                 mint,
             });

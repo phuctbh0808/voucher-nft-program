@@ -44,15 +44,24 @@ describe('mint-voucher', () => {
         const mint = anchor.web3.Keypair.generate();
         const { key: vault } = fixture.pda.vault(vaultSeed);
         const { key: metadata } = await fixture.pda.metadata(mint.publicKey);
+        const { key: masterEdition } = await fixture.pda.masterEdition(mint.publicKey);
         const tx = await fixture.mintVoucher(vaultSeed, operator, mint);
         console.log('Add mint success at tx', tx);
 
         const mintData = await token.getMint(fixture.connection, mint.publicKey);
         assert.equal(mintData.decimals, 0, 'Decimal must be zero');
-        assert.equal(mintData.mintAuthority.toBase58(), vault.toBase58(), 'Mint Authority must be vault');
-        assert.equal(mintData.freezeAuthority.toBase58(), vault.toBase58(), 'Freeze Authority must be vault');
+        assert.equal(
+            mintData.mintAuthority.toBase58(),
+            masterEdition.toBase58(),
+            'Mint Authority must be master edition'
+        );
+        assert.equal(
+            mintData.freezeAuthority.toBase58(),
+            masterEdition.toBase58(),
+            'Freeze Authority must be master edition'
+        );
         assert.equal(mintData.isInitialized, true, 'Mint must be initialized');
-        assert.equal(Number(mintData.supply), 1, 'Supply must be zero');
+        assert.equal(Number(mintData.supply), 1, 'Supply must be one');
 
         const metadataData = await Metadata.findByMint(fixture.connection, mint.publicKey);
         assert.equal(metadataData.data.data.name, 'Voucher', 'Name must be Voucher');
