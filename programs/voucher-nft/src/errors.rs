@@ -4,4 +4,6 @@ use anchor_lang::prelude::*;
 pub enum VoucherNftError {
     #[msg("Only Admin")]
     OnlyAdmin,
+    #[msg("Only Operator")]
+    OnlyOperator,
 }

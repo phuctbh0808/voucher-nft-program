@@ -1,4 +1,3 @@
-use crate::errors::*;
 use anchor_lang::prelude::*;
 
 #[account]

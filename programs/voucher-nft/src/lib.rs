@@ -21,4 +21,8 @@ pub mod voucher_nft {
     pub fn add_vault(ctx: Context<AddVault>, seed: String, operator: Pubkey) -> ProgramResult {
         add_vault::handler(ctx, seed, operator)
     }
+
+    pub fn mint_voucher(ctx: Context<MintVoucher>, seed: String) -> ProgramResult {
+        mint_voucher::handler(ctx, seed)
+    }
 }
