@@ -23,6 +23,41 @@ export type VoucherNft = {
             ];
             args: [];
         },
+        {
+            name: 'addVault';
+            accounts: [
+                {
+                    name: 'config';
+                    isMut: false;
+                    isSigner: false;
+                },
+                {
+                    name: 'vault';
+                    isMut: true;
+                    isSigner: false;
+                },
+                {
+                    name: 'admin';
+                    isMut: true;
+                    isSigner: true;
+                },
+                {
+                    name: 'systemProgram';
+                    isMut: false;
+                    isSigner: false;
+                },
+            ];
+            args: [
+                {
+                    name: 'seed';
+                    type: 'string';
+                },
+                {
+                    name: 'operator';
+                    type: 'publicKey';
+                },
+            ];
+        },
     ];
     accounts: [
         {
@@ -39,6 +74,44 @@ export type VoucherNft = {
                         type: {
                             array: ['u128', 6];
                         };
+                    },
+                ];
+            };
+        },
+        {
+            name: 'vault';
+            type: {
+                kind: 'struct';
+                fields: [
+                    {
+                        name: 'operator';
+                        type: 'publicKey';
+                    },
+                    {
+                        name: 'seed';
+                        type: 'string';
+                    },
+                    {
+                        name: 'reserve';
+                        type: {
+                            array: ['u128', 6];
+                        };
+                    },
+                ];
+            };
+        },
+    ];
+    types: [
+        {
+            name: 'VoucherNftError';
+            type: {
+                kind: 'enum';
+                variants: [
+                    {
+                        name: 'OnlyAdmin';
+                    },
+                    {
+                        name: 'SeedTooLong';
                     },
                 ];
             };
@@ -71,6 +144,41 @@ export const IDL: VoucherNft = {
             ],
             args: [],
         },
+        {
+            name: 'addVault',
+            accounts: [
+                {
+                    name: 'config',
+                    isMut: false,
+                    isSigner: false,
+                },
+                {
+                    name: 'vault',
+                    isMut: true,
+                    isSigner: false,
+                },
+                {
+                    name: 'admin',
+                    isMut: true,
+                    isSigner: true,
+                },
+                {
+                    name: 'systemProgram',
+                    isMut: false,
+                    isSigner: false,
+                },
+            ],
+            args: [
+                {
+                    name: 'seed',
+                    type: 'string',
+                },
+                {
+                    name: 'operator',
+                    type: 'publicKey',
+                },
+            ],
+        },
     ],
     accounts: [
         {
@@ -87,6 +195,44 @@ export const IDL: VoucherNft = {
                         type: {
                             array: ['u128', 6],
                         },
+                    },
+                ],
+            },
+        },
+        {
+            name: 'vault',
+            type: {
+                kind: 'struct',
+                fields: [
+                    {
+                        name: 'operator',
+                        type: 'publicKey',
+                    },
+                    {
+                        name: 'seed',
+                        type: 'string',
+                    },
+                    {
+                        name: 'reserve',
+                        type: {
+                            array: ['u128', 6],
+                        },
+                    },
+                ],
+            },
+        },
+    ],
+    types: [
+        {
+            name: 'VoucherNftError',
+            type: {
+                kind: 'enum',
+                variants: [
+                    {
+                        name: 'OnlyAdmin',
+                    },
+                    {
+                        name: 'SeedTooLong',
                     },
                 ],
             },

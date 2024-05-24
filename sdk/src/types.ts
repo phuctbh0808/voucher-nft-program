@@ -3,6 +3,7 @@ import { BorshAccountsCoder, Idl } from '@project-serum/anchor';
 
 import { VoucherNft } from '../artifacts/voucher_nft';
 import IDL from '../artifacts/voucher_nft.json';
+import { PublicKey } from '@solana/web3.js';
 
 export type VoucherNftType = VoucherNft;
 export const VoucherNftIDL = IDL as Idl;
@@ -54,4 +55,12 @@ export type Configuration = {
 
 export type ConfigData = {
     admin: anchor.web3.PublicKey;
+};
+
+export type AddVaultParams = {
+    config: PublicKey;
+    vault: PublicKey;
+    admin: PublicKey;
+    operator: PublicKey;
+    seed: string;
 };

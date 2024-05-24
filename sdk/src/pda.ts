@@ -22,4 +22,15 @@ export class PDA {
             bump: bump,
         };
     };
+
+    vault = (seed: string): PDAInfo => {
+        const [pda, bump] = anchor.web3.PublicKey.findProgramAddressSync(
+            [Buffer.from(Constants.VAULT_SEED), Buffer.from(seed)],
+            this.programId
+        );
+        return {
+            key: pda,
+            bump,
+        };
+    };
 }

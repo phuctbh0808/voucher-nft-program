@@ -3,6 +3,8 @@ import { Program } from '@project-serum/anchor';
 import { configurations, NetworkType, VoucherNftIDL, VoucherNftType } from './types';
 import { getKeypairFromFile } from '@solana-developers/helpers';
 import { PDA } from './pda';
+import { addVaultIx } from './instructions';
+import { PublicKey } from '@solana/web3.js';
 
 export class VoucherNftFixture {
     public readonly program: Program<VoucherNftType>;
@@ -37,10 +39,40 @@ export class VoucherNftFixture {
         }
     }
 
+    async addVault(seed: string, operator: PublicKey): Promise<string> {
+        const { key: config } = this.pda.config();
+        const { key: vault } = this.pda.vault(seed);
+        const addVaultIns = await addVaultIx(this.program, {
+            admin: this.provider.publicKey,
+            config,
+            operator: operator,
+            seed: seed,
+            vault: vault,
+        });
+
+        const transaction = new anchor.web3.Transaction().add(addVaultIns);
+        try {
+            return await this.provider.sendAndConfirm(transaction);
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+
     async getConfigData() {
         const { key: config } = this.pda.config();
         try {
             return await this.program.account.config.fetch(config);
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+
+    async getVaultData(seed: string) {
+        const { key: vault } = this.pda.vault(seed);
+        try {
+            return await this.program.account.vault.fetch(vault);
         } catch (error) {
             console.error(error);
             throw error;
