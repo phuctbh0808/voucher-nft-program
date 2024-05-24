@@ -40,21 +40,20 @@ export class VoucherNftFixture {
     }
 
     async addVault(seed: string, operator: PublicKey): Promise<string> {
-        const { key: config } = this.pda.config();
-        const { key: vault } = this.pda.vault(seed);
-        const addVaultIns = await addVaultIx(this.program, {
-            admin: this.provider.publicKey,
-            config,
-            operator: operator,
-            seed: seed,
-            vault: vault,
-        });
-
-        const transaction = new anchor.web3.Transaction().add(addVaultIns);
         try {
+            const { key: config } = this.pda.config();
+            const { key: vault } = this.pda.vault(seed);
+            const addVaultIns = await addVaultIx(this.program, {
+                admin: this.provider.publicKey,
+                config,
+                operator: operator,
+                seed: seed,
+                vault: vault,
+            });
+
+            const transaction = new anchor.web3.Transaction().add(addVaultIns);
             return await this.provider.sendAndConfirm(transaction);
         } catch (error) {
-            console.error(error);
             throw error;
         }
     }
