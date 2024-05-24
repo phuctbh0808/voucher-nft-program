@@ -59,23 +59,22 @@ pub struct MintVoucher<'info> {
 }
 
 pub fn handler(ctx: Context<MintVoucher>, seed: String) -> ProgramResult {
-    msg!(
-        "Minting voucher NFT {} with seed {}",
-        ctx.accounts.mint.key(),
-        seed
-    );
-
     let vault = &ctx.accounts.vault;
+    let mint = &ctx.accounts.mint;
+    let operator = &ctx.accounts.operator;
+    let metadata_account = &ctx.accounts.metadata_account;
+    let token_metadata_program = &ctx.accounts.token_metadata_program;
+    msg!("Minting voucher NFT {} with seed {}", mint.key(), seed);
 
     msg!("Minting NFT to vault");
     let cpi_accounts = MintTo {
-        mint: ctx.accounts.mint.to_account_info(),
+        mint: mint.to_account_info(),
         to: ctx.accounts.vault_token_account.to_account_info(),
         authority: vault.to_account_info(),
     };
     token::mint_to(
         CpiContext::new_with_signer(
-            ctx.accounts.token_metadata_program.to_account_info(),
+            ctx.accounts.token_program.to_account_info(),
             cpi_accounts,
             &[&[Vault::SEED.as_bytes(), seed.as_bytes(), &[vault.bump]]],
         ),
@@ -84,10 +83,10 @@ pub fn handler(ctx: Context<MintVoucher>, seed: String) -> ProgramResult {
 
     msg!("Creating Metadata account");
     let metadata_account_infos = vec![
-        ctx.accounts.metadata_account.to_account_info(),
-        ctx.accounts.mint.to_account_info(),
+        metadata_account.to_account_info(),
+        mint.to_account_info(),
         vault.to_account_info(),
-        ctx.accounts.operator.to_account_info(),
+        operator.to_account_info(),
         vault.to_account_info(),
         ctx.accounts.system_program.to_account_info(),
         ctx.accounts.rent.to_account_info(),
@@ -99,11 +98,11 @@ pub fn handler(ctx: Context<MintVoucher>, seed: String) -> ProgramResult {
     }];
     invoke_signed(
         &create_metadata_accounts_v2(
-            ctx.accounts.token_metadata_program.key(),
-            ctx.accounts.metadata_account.key(),
-            ctx.accounts.mint.key(),
+            token_metadata_program.key(),
+            metadata_account.key(),
+            mint.key(),
             vault.key(),
-            ctx.accounts.operator.key(),
+            operator.key(),
             vault.key(),
             "Voucher".to_string(),
             "VC".to_string(),
@@ -122,11 +121,11 @@ pub fn handler(ctx: Context<MintVoucher>, seed: String) -> ProgramResult {
     msg!("Creating master edition");
     let master_edition_infos = vec![
         ctx.accounts.master_edition.to_account_info(),
-        ctx.accounts.mint.to_account_info(),
-        ctx.accounts.vault.to_account_info(),
-        ctx.accounts.operator.to_account_info(),
-        ctx.accounts.metadata_account.to_account_info(),
-        ctx.accounts.token_metadata_program.to_account_info(),
+        mint.to_account_info(),
+        vault.to_account_info(),
+        operator.to_account_info(),
+        metadata_account.to_account_info(),
+        token_metadata_program.to_account_info(),
         ctx.accounts.token_program.to_account_info(),
         ctx.accounts.system_program.to_account_info(),
         ctx.accounts.rent.to_account_info(),
@@ -134,13 +133,13 @@ pub fn handler(ctx: Context<MintVoucher>, seed: String) -> ProgramResult {
 
     invoke_signed(
         &create_master_edition_v3(
-            ctx.accounts.token_metadata_program.key(),
+            token_metadata_program.key(),
             ctx.accounts.master_edition.key(),
-            ctx.accounts.mint.key(),
-            ctx.accounts.vault.key(),
-            ctx.accounts.vault.key(),
-            ctx.accounts.metadata_account.key(),
-            ctx.accounts.operator.key(),
+            mint.key(),
+            vault.key(),
+            vault.key(),
+            metadata_account.key(),
+            operator.key(),
             Some(0),
         ),
         master_edition_infos.as_slice(),

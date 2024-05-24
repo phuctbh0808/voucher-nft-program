@@ -47,7 +47,7 @@ describe('mint-voucher', () => {
         await airdrop(fixture.provider.connection, operator2.publicKey, 100);
         try {
             await fixture.mintVoucher(vaultSeed, operator2, mint);
-            assert.fail("Mint voucher should fail");
+            assert.fail('Mint voucher should fail');
         } catch (error) {
             assert.ok(error instanceof SendTransactionError);
             assert.ok(error.logs.some((log) => log.includes('Custom program error: 0x1771')));
