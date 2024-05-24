@@ -58,6 +58,57 @@ export type VoucherNft = {
                 },
             ];
         },
+        {
+            name: 'mintVoucher';
+            accounts: [
+                {
+                    name: 'vault';
+                    isMut: false;
+                    isSigner: false;
+                },
+                {
+                    name: 'operator';
+                    isMut: true;
+                    isSigner: true;
+                },
+                {
+                    name: 'mint';
+                    isMut: true;
+                    isSigner: true;
+                },
+                {
+                    name: 'tokenMetadataProgram';
+                    isMut: false;
+                    isSigner: false;
+                },
+                {
+                    name: 'systemProgram';
+                    isMut: false;
+                    isSigner: false;
+                },
+                {
+                    name: 'tokenProgram';
+                    isMut: false;
+                    isSigner: false;
+                },
+                {
+                    name: 'associatedTokenProgram';
+                    isMut: false;
+                    isSigner: false;
+                },
+                {
+                    name: 'rent';
+                    isMut: false;
+                    isSigner: false;
+                },
+            ];
+            args: [
+                {
+                    name: 'seed';
+                    type: 'string';
+                },
+            ];
+        },
     ];
     accounts: [
         {
@@ -111,7 +162,7 @@ export type VoucherNft = {
                         name: 'OnlyAdmin';
                     },
                     {
-                        name: 'SeedTooLong';
+                        name: 'OnlyOperator';
                     },
                 ];
             };
@@ -179,6 +230,57 @@ export const IDL: VoucherNft = {
                 },
             ],
         },
+        {
+            name: 'mintVoucher',
+            accounts: [
+                {
+                    name: 'vault',
+                    isMut: false,
+                    isSigner: false,
+                },
+                {
+                    name: 'operator',
+                    isMut: true,
+                    isSigner: true,
+                },
+                {
+                    name: 'mint',
+                    isMut: true,
+                    isSigner: true,
+                },
+                {
+                    name: 'tokenMetadataProgram',
+                    isMut: false,
+                    isSigner: false,
+                },
+                {
+                    name: 'systemProgram',
+                    isMut: false,
+                    isSigner: false,
+                },
+                {
+                    name: 'tokenProgram',
+                    isMut: false,
+                    isSigner: false,
+                },
+                {
+                    name: 'associatedTokenProgram',
+                    isMut: false,
+                    isSigner: false,
+                },
+                {
+                    name: 'rent',
+                    isMut: false,
+                    isSigner: false,
+                },
+            ],
+            args: [
+                {
+                    name: 'seed',
+                    type: 'string',
+                },
+            ],
+        },
     ],
     accounts: [
         {
@@ -232,7 +334,7 @@ export const IDL: VoucherNft = {
                         name: 'OnlyAdmin',
                     },
                     {
-                        name: 'SeedTooLong',
+                        name: 'OnlyOperator',
                     },
                 ],
             },

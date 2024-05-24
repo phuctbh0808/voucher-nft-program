@@ -25,7 +25,7 @@ export const configurations: Map<NetworkType, Configuration> = new Map<NetworkTy
         NetworkType.MainNet,
         {
             url: 'https://api-mainnet-beta.renec.foundation:8899/',
-            programId: 'GgYWQNtiG5psgd2ZcVRNBNzCW28wBrhc6ntMMamBuSJU',
+            programId: '3wFJr8f315BbdARn8dTit9XNxeUedNWD6ioLSjbXz1U3',
             keypairPath: '~/.config/renec/id.json',
         },
     ],
@@ -33,7 +33,7 @@ export const configurations: Map<NetworkType, Configuration> = new Map<NetworkTy
         NetworkType.TestNet,
         {
             url: 'https://api-testnet.renec.foundation:8899/',
-            programId: 'GgYWQNtiG5psgd2ZcVRNBNzCW28wBrhc6ntMMamBuSJU',
+            programId: '3wFJr8f315BbdARn8dTit9XNxeUedNWD6ioLSjbXz1U3',
             keypairPath: '~/.config/renec/id.json',
         },
     ],
@@ -41,7 +41,7 @@ export const configurations: Map<NetworkType, Configuration> = new Map<NetworkTy
         NetworkType.LocalNet,
         {
             url: 'http://127.0.0.1:8899',
-            programId: 'GgYWQNtiG5psgd2ZcVRNBNzCW28wBrhc6ntMMamBuSJU',
+            programId: '3wFJr8f315BbdARn8dTit9XNxeUedNWD6ioLSjbXz1U3',
             keypairPath: '~/.config/renec/id.json',
         },
     ],
