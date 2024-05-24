@@ -6,10 +6,10 @@ use anchor_spl::associated_token::AssociatedToken;
 use anchor_spl::token::{Mint, Token};
 
 #[derive(Accounts)]
-#[instruction(seed: String)]
+#[instruction(_seed: String)]
 pub struct MintVoucher<'info> {
     #[account(
-        seeds = [Vault::SEED.as_bytes(), seed.as_bytes()],
+        seeds = [Vault::SEED.as_bytes(), _seed.as_bytes()],
         bump,
     )]
     pub vault: Box<Account<'info, Vault>>,
@@ -40,6 +40,6 @@ pub struct MintVoucher<'info> {
     pub rent: Sysvar<'info, Rent>,
 }
 
-pub fn handler(ctx: Context<MintVoucher>, seed: String) -> ProgramResult {
+pub fn handler(_ctx: Context<MintVoucher>, _seed: String) -> ProgramResult {
     Ok(())
 }
