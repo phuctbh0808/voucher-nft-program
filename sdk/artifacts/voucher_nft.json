@@ -22,6 +22,41 @@
         }
       ],
       "args": []
+    },
+    {
+      "name": "addVault",
+      "accounts": [
+        {
+          "name": "config",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "vault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "admin",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "seed",
+          "type": "string"
+        },
+        {
+          "name": "operator",
+          "type": "publicKey"
+        }
+      ]
     }
   ],
   "accounts": [
@@ -45,9 +80,47 @@
           }
         ]
       }
+    },
+    {
+      "name": "Vault",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "operator",
+            "type": "publicKey"
+          },
+          {
+            "name": "seed",
+            "type": "string"
+          },
+          {
+            "name": "reserve",
+            "type": {
+              "array": [
+                "u128",
+                6
+              ]
+            }
+          }
+        ]
+      }
     }
   ],
-  "metadata": {
-    "address": "GgYWQNtiG5psgd2ZcVRNBNzCW28wBrhc6ntMMamBuSJU"
-  }
+  "types": [
+    {
+      "name": "VoucherNftError",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "OnlyAdmin"
+          },
+          {
+            "name": "SeedTooLong"
+          }
+        ]
+      }
+    }
+  ]
 }

@@ -1,4 +1,5 @@
 mod constants;
+mod errors;
 mod instructions;
 mod states;
 
@@ -15,5 +16,9 @@ pub mod voucher_nft {
 
     pub fn initialize(ctx: Context<Initialize>) -> ProgramResult {
         initialize::handler(ctx)
+    }
+
+    pub fn add_vault(ctx: Context<AddVault>, seed: String, operator: Pubkey) -> ProgramResult {
+        add_vault::handler(ctx, seed, operator)
     }
 }
