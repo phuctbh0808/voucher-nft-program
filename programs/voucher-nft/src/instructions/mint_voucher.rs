@@ -3,7 +3,7 @@ use crate::errors::*;
 use crate::states::*;
 use anchor_lang::prelude::*;
 use anchor_spl::associated_token::AssociatedToken;
-use anchor_spl::token::{Mint, Token};
+use anchor_spl::token::{self, Mint, MintTo, Token, TokenAccount};
 use mpl_token_metadata::instruction::create_metadata_accounts_v2;
 use solana_program::program::invoke_signed;
 
@@ -31,6 +31,14 @@ pub struct MintVoucher<'info> {
     )]
     pub mint: Account<'info, Mint>,
 
+    #[account(
+        init,
+        payer = operator,
+        associated_token::mint = mint,
+        associated_token::authority = vault,
+    )]
+    pub vault_token_account: Account<'info, TokenAccount>,
+
     /// CHECK: Token_metadata_program will check this
     #[account(mut)]
     pub metadata_account: AccountInfo<'info>,
@@ -47,7 +55,28 @@ pub struct MintVoucher<'info> {
 }
 
 pub fn handler(ctx: Context<MintVoucher>, seed: String) -> ProgramResult {
-    msg!("Minting voucher NFT with seed {}", seed);
+    msg!(
+        "Minting voucher NFT {} with seed {}",
+        ctx.accounts.mint.key(),
+        seed
+    );
+
+    msg!("Minting NFT to vault");
+    let (_, bump) =
+        Pubkey::find_program_address(&[Vault::SEED.as_bytes(), seed.as_bytes()], ctx.program_id);
+    let cpi_accounts = MintTo {
+        mint: ctx.accounts.mint.to_account_info(),
+        to: ctx.accounts.vault_token_account.to_account_info(),
+        authority: ctx.accounts.vault.to_account_info().clone(),
+    };
+    token::mint_to(
+        CpiContext::new_with_signer(
+            ctx.accounts.token_metadata_program.to_account_info(),
+            cpi_accounts,
+            &[&[Vault::SEED.as_bytes(), seed.as_bytes(), &[bump]]],
+        ),
+        1,
+    )?;
 
     msg!("Creating Metadata account");
     let metadata_account_infos = vec![

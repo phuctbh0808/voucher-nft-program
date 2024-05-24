@@ -52,7 +52,7 @@ describe('mint-voucher', () => {
         assert.equal(mintData.mintAuthority.toBase58(), vault.toBase58(), 'Mint Authority must be vault');
         assert.equal(mintData.freezeAuthority.toBase58(), vault.toBase58(), 'Freeze Authority must be vault');
         assert.equal(mintData.isInitialized, true, 'Mint must be initialized');
-        assert.equal(Number(mintData.supply), 0, 'Supply must be zero');
+        assert.equal(Number(mintData.supply), 1, 'Supply must be zero');
 
         const metadataData = await Metadata.findByMint(fixture.connection, mint.publicKey);
         assert.equal(metadataData.data.data.name, 'Voucher', 'Name must be Voucher');
@@ -65,5 +65,9 @@ describe('mint-voucher', () => {
         assert.equal(metadataData.data.updateAuthority, vault.toBase58(), 'Update Authority must be vault');
         assert.equal(metadataData.pubkey.toBase58(), metadata.toBase58(), 'Metadata pubkey must be equal to metadata');
         assert.equal(metadataData.data.mint, mint.publicKey.toBase58(), 'Mint must be mint public key');
+
+        const vaultTokenAccount = await token.getAssociatedTokenAddress(mint.publicKey, vault, true);
+        const tokenAccount = await token.getAccount(fixture.connection, vaultTokenAccount);
+        assert.equal(tokenAccount.amount, 1, 'Amount must be 1');
     });
 });

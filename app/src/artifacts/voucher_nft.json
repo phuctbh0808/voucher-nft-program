@@ -77,6 +77,11 @@
           "isSigner": true
         },
         {
+          "name": "vaultTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
           "name": "metadataAccount",
           "isMut": true,
           "isSigner": false

@@ -68,6 +68,7 @@ export type AddVaultParams = {
 export type MintVoucherParams = {
     vault: PublicKey;
     operator: PublicKey;
+    vaultTokenAccount: PublicKey;
     mint: Keypair;
     metadataAccount: PublicKey;
     tokenMetadataProgram: PublicKey;
