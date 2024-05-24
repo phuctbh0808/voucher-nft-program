@@ -4,7 +4,7 @@ import { Program } from '@project-serum/anchor';
 import { configurations, NetworkType, VoucherNftIDL, VoucherNftType } from './types';
 import { getKeypairFromFile } from '@solana-developers/helpers';
 import { PDA } from './pda';
-import { addVaultIx, mintVoucherIx } from './instructions';
+import { addVaultIx, mintVoucherIx, modifyComputeUnitIx } from './instructions';
 import { Keypair, PublicKey } from '@solana/web3.js';
 import { Constants } from './constants';
 
@@ -68,7 +68,7 @@ export class VoucherNftFixture {
             const { key: metadataAccount } = await this.pda.metadata(mint.publicKey);
             const { key: vault } = this.pda.vault(seed);
             const vaultTokenAccount = await token.getAssociatedTokenAddress(mint.publicKey, vault, true);
-            console.log('Vault token account {}', vaultTokenAccount.toBase58());
+            const modifyUnitIns = modifyComputeUnitIx();
             const mintVoucherIns = await mintVoucherIx(this.program, {
                 operator: operator.publicKey,
                 seed,
@@ -78,7 +78,7 @@ export class VoucherNftFixture {
                 vault: vault,
                 mint,
             });
-            const transaction = new anchor.web3.Transaction().add(mintVoucherIns);
+            const transaction = new anchor.web3.Transaction().add(modifyUnitIns, mintVoucherIns);
             return await this.provider.sendAndConfirm(transaction, [operator, mint]);
         } catch (error) {
             console.error(error);

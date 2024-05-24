@@ -1,6 +1,7 @@
 import { Program } from '@project-serum/anchor';
 import { Keypair } from '@solana/web3.js';
 import { AddVaultParams, MintVoucherParams, VoucherNftType } from './types';
+import { ComputeBudgetProgram } from '@solana/web3.js';
 
 export function addVaultIx(program: Program<VoucherNftType>, params: AddVaultParams) {
     return program.methods
@@ -25,4 +26,10 @@ export async function mintVoucherIx(program: Program<VoucherNftType>, params: Mi
             tokenMetadataProgram: params.tokenMetadataProgram,
         })
         .instruction();
+}
+
+export function modifyComputeUnitIx(units?: number) {
+    return ComputeBudgetProgram.setComputeUnitLimit({
+        units: units || 1000000,
+    });
 }
