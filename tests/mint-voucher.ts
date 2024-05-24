@@ -2,9 +2,9 @@ import * as anchor from '@project-serum/anchor';
 import * as token from '@solana/spl-token';
 import * as assert from 'assert';
 import { VoucherNftFixture, VoucherNftFixtureBuilder } from '../sdk/src/voucher-nft-fixture';
-import { SendTransactionError } from '@solana/web3.js';
 import { NetworkType } from '../sdk/src/types';
 import { airdrop } from '../sdk/src/utils';
+import { Metadata } from '@renec-foundation/mpl-token-metadata';
 
 describe('mint-voucher', () => {
     let fixture: VoucherNftFixture;
@@ -42,10 +42,10 @@ describe('mint-voucher', () => {
 
     it('Mint voucher success', async () => {
         const mint = anchor.web3.Keypair.generate();
+        const { key: vault } = fixture.pda.vault(vaultSeed);
+        const { key: metadata } = await fixture.pda.metadata(mint.publicKey);
         const tx = await fixture.mintVoucher(vaultSeed, operator, mint);
         console.log('Add mint success at tx', tx);
-
-        const { key: vault } = fixture.pda.vault(vaultSeed);
 
         const mintData = await token.getMint(fixture.connection, mint.publicKey);
         assert.equal(mintData.decimals, 0, 'Decimal must be zero');
@@ -53,5 +53,17 @@ describe('mint-voucher', () => {
         assert.equal(mintData.freezeAuthority.toBase58(), vault.toBase58(), 'Freeze Authority must be vault');
         assert.equal(mintData.isInitialized, true, 'Mint must be initialized');
         assert.equal(Number(mintData.supply), 0, 'Supply must be zero');
+
+        const metadataData = await Metadata.findByMint(fixture.connection, mint.publicKey);
+        assert.equal(metadataData.data.data.name, 'Voucher', 'Name must be Voucher');
+        assert.equal(metadataData.data.data.symbol, 'VC', 'Symbol must be VC');
+        assert.equal(metadataData.data.data.uri, 'VC_URI', 'URI must be VC_URI');
+        assert.equal(metadataData.data.data.creators.length, 1, 'Creators length must be 1');
+        assert.equal(metadataData.data.data.creators[0].address, vault.toBase58(), 'Creators must be vault');
+        assert.equal(metadataData.data.data.creators[0].verified, true, 'Creators must be verified');
+        assert.equal(metadataData.data.data.creators[0].share, 100, 'Creators must be 100 share');
+        assert.equal(metadataData.data.updateAuthority, vault.toBase58(), 'Update Authority must be vault');
+        assert.equal(metadataData.pubkey.toBase58(), metadata.toBase58(), 'Metadata pubkey must be equal to metadata');
+        assert.equal(metadataData.data.mint, mint.publicKey.toBase58(), 'Mint must be mint public key');
     });
 });

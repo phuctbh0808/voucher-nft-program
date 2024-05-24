@@ -77,6 +77,11 @@ export type VoucherNft = {
           "isSigner": true
         },
         {
+          "name": "metadataAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
           "name": "tokenMetadataProgram",
           "isMut": false,
           "isSigner": false
@@ -253,6 +258,11 @@ export const IDL: VoucherNft = {
           "name": "mint",
           "isMut": true,
           "isSigner": true
+        },
+        {
+          "name": "metadataAccount",
+          "isMut": true,
+          "isSigner": false
         },
         {
           "name": "tokenMetadataProgram",

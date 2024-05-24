@@ -69,6 +69,7 @@ export type MintVoucherParams = {
     vault: PublicKey;
     operator: PublicKey;
     mint: Keypair;
+    metadataAccount: PublicKey;
     tokenMetadataProgram: PublicKey;
     seed: string;
 };

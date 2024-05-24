@@ -13,12 +13,13 @@ export function addVaultIx(program: Program<VoucherNftType>, params: AddVaultPar
         .instruction();
 }
 
-export function mintVoucherIx(program: Program<VoucherNftType>, params: MintVoucherParams) {
+export async function mintVoucherIx(program: Program<VoucherNftType>, params: MintVoucherParams) {
     return program.methods
         .mintVoucher(params.seed)
         .accounts({
             vault: params.vault,
             operator: params.operator,
+            metadataAccount: params.metadataAccount,
             mint: params.mint.publicKey,
             tokenMetadataProgram: params.tokenMetadataProgram,
         })

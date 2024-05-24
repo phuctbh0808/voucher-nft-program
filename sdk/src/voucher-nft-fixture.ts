@@ -64,11 +64,13 @@ export class VoucherNftFixture {
 
     async mintVoucher(seed: string, operator: Keypair, mint: Keypair): Promise<string> {
         try {
+            const { key: metadataAccount } = await this.pda.metadata(mint.publicKey);
             const { key: vault } = this.pda.vault(seed);
             const mintVoucherIns = await mintVoucherIx(this.program, {
                 operator: operator.publicKey,
                 seed,
                 tokenMetadataProgram: Constants.TOKEN_METADATA_PROGRAM,
+                metadataAccount,
                 vault: vault,
                 mint,
             });
