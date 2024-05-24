@@ -18,3 +18,5 @@ default = []
 [dependencies]
 anchor-lang = { git = "https://github.com/project-serum/anchor", tag = "v0.20.1", version = "0.20.1", package = "anchor-lang"}
 anchor-spl = { git = "https://github.com/project-serum/anchor", tag = "v0.20.1", version = "0.20.1", package = "anchor-spl" }
+mpl-token-metadata = "1.2.7"
+solana-program = "*"
