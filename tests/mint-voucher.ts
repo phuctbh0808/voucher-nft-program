@@ -5,6 +5,7 @@ import { VoucherNftFixture, VoucherNftFixtureBuilder } from '../sdk/src/voucher-
 import { NetworkType } from '../sdk/src/types';
 import { airdrop } from '../sdk/src/utils';
 import { Metadata } from '@renec-foundation/mpl-token-metadata';
+import { SendTransactionError } from '@solana/web3.js';
 
 describe('mint-voucher', () => {
     let fixture: VoucherNftFixture;
@@ -38,6 +39,19 @@ describe('mint-voucher', () => {
         const vaultData = await fixture.getVaultData(vaultSeed);
         assert.equal(vaultData.seed, vaultSeed);
         assert.equal(vaultData.operator.toBase58(), operator.publicKey.toBase58());
+    });
+
+    it('FAILED OnlyOperator: Mint voucher failed because of wrong operator', async () => {
+        const mint = anchor.web3.Keypair.generate();
+        const operator2 = anchor.web3.Keypair.generate();
+        await airdrop(fixture.provider.connection, operator2.publicKey, 100);
+        try {
+            await fixture.mintVoucher(vaultSeed, operator2, mint);
+            assert.fail("Mint voucher should fail");
+        } catch (error) {
+            assert.ok(error instanceof SendTransactionError);
+            assert.ok(error.logs.some((log) => log.includes('Custom program error: 0x1771')));
+        }
     });
 
     it('Mint voucher success', async () => {

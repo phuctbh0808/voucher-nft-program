@@ -84,7 +84,7 @@ export class VoucherNftFixture {
             const transaction = new anchor.web3.Transaction().add(modifyUnitIns, mintVoucherIns);
             return await this.provider.sendAndConfirm(transaction, [operator, mint]);
         } catch (error) {
-            console.error(error);
+            this.verbose && console.error(error);
             throw error;
         }
     }
