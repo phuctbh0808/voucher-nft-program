@@ -61,19 +61,19 @@ pub fn handler(ctx: Context<MintVoucher>, seed: String) -> ProgramResult {
         seed
     );
 
+    let vault = &ctx.accounts.vault;
+
     msg!("Minting NFT to vault");
-    let (_, bump) =
-        Pubkey::find_program_address(&[Vault::SEED.as_bytes(), seed.as_bytes()], ctx.program_id);
     let cpi_accounts = MintTo {
         mint: ctx.accounts.mint.to_account_info(),
         to: ctx.accounts.vault_token_account.to_account_info(),
-        authority: ctx.accounts.vault.to_account_info().clone(),
+        authority: vault.to_account_info(),
     };
     token::mint_to(
         CpiContext::new_with_signer(
             ctx.accounts.token_metadata_program.to_account_info(),
             cpi_accounts,
-            &[&[Vault::SEED.as_bytes(), seed.as_bytes(), &[bump]]],
+            &[&[Vault::SEED.as_bytes(), seed.as_bytes(), &[vault.bump]]],
         ),
         1,
     )?;
@@ -82,16 +82,14 @@ pub fn handler(ctx: Context<MintVoucher>, seed: String) -> ProgramResult {
     let metadata_account_infos = vec![
         ctx.accounts.metadata_account.to_account_info(),
         ctx.accounts.mint.to_account_info(),
-        ctx.accounts.vault.to_account_info(),
+        vault.to_account_info(),
         ctx.accounts.operator.to_account_info(),
-        ctx.accounts.vault.to_account_info(),
+        vault.to_account_info(),
         ctx.accounts.system_program.to_account_info(),
         ctx.accounts.rent.to_account_info(),
     ];
-    let (_, bump) =
-        Pubkey::find_program_address(&[Vault::SEED.as_bytes(), seed.as_bytes()], ctx.program_id);
     let creator = vec![mpl_token_metadata::state::Creator {
-        address: ctx.accounts.vault.key(),
+        address: vault.key(),
         verified: true,
         share: 100,
     }];
@@ -100,9 +98,9 @@ pub fn handler(ctx: Context<MintVoucher>, seed: String) -> ProgramResult {
             ctx.accounts.token_metadata_program.key(),
             ctx.accounts.metadata_account.key(),
             ctx.accounts.mint.key(),
-            ctx.accounts.vault.key(),
+            vault.key(),
             ctx.accounts.operator.key(),
-            ctx.accounts.vault.key(),
+            vault.key(),
             "Voucher".to_string(),
             "VC".to_string(),
             "VC_URI".to_string(),
@@ -114,7 +112,7 @@ pub fn handler(ctx: Context<MintVoucher>, seed: String) -> ProgramResult {
             None,
         ),
         metadata_account_infos.as_slice(),
-        &[&[Vault::SEED.as_bytes(), seed.as_bytes(), &[bump]]],
+        &[&[Vault::SEED.as_bytes(), seed.as_bytes(), &[vault.bump]]],
     )?;
 
     Ok(())

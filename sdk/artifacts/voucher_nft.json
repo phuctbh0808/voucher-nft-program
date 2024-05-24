@@ -53,6 +53,10 @@
           "type": "string"
         },
         {
+          "name": "bump",
+          "type": "u8"
+        },
+        {
           "name": "operator",
           "type": "publicKey"
         }
@@ -150,6 +154,10 @@
           {
             "name": "operator",
             "type": "publicKey"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
           },
           {
             "name": "seed",

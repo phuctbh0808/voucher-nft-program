@@ -63,6 +63,7 @@ export type AddVaultParams = {
     admin: PublicKey;
     operator: PublicKey;
     seed: string;
+    bump: number;
 };
 
 export type MintVoucherParams = {

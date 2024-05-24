@@ -53,6 +53,10 @@ export type VoucherNft = {
           "type": "string"
         },
         {
+          "name": "bump",
+          "type": "u8"
+        },
+        {
           "name": "operator",
           "type": "publicKey"
         }
@@ -150,6 +154,10 @@ export type VoucherNft = {
           {
             "name": "operator",
             "type": "publicKey"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
           },
           {
             "name": "seed",
@@ -241,6 +249,10 @@ export const IDL: VoucherNft = {
           "type": "string"
         },
         {
+          "name": "bump",
+          "type": "u8"
+        },
+        {
           "name": "operator",
           "type": "publicKey"
         }
@@ -338,6 +350,10 @@ export const IDL: VoucherNft = {
           {
             "name": "operator",
             "type": "publicKey"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
           },
           {
             "name": "seed",

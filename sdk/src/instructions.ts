@@ -5,7 +5,7 @@ import { ComputeBudgetProgram } from '@solana/web3.js';
 
 export function addVaultIx(program: Program<VoucherNftType>, params: AddVaultParams) {
     return program.methods
-        .addVault(params.seed, params.operator)
+        .addVault(params.seed, params.bump, params.operator)
         .accounts({
             config: params.config,
             vault: params.vault,
