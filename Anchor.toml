@@ -10,3 +10,7 @@ wallet = "~/.config/renec/id.json"
 
 [scripts]
 test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/mint-voucher.ts"
+
+[[test.genesis]]
+address = "metaXfaoQatFJP9xiuYRsKkHYgS5NqqcfxFbLGS5LdN"
+program = "tests/mpl_token_metadata.so"
