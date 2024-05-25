@@ -1,6 +1,5 @@
 [programs.localnet]
-dapp_starter = "DVGDPtHSpFxBVAmUPtjauNoQkRyDxmZyUCGfWrQi6fKK"
-voucher_nft = "GgYWQNtiG5psgd2ZcVRNBNzCW28wBrhc6ntMMamBuSJU"
+voucher_nft = "3wFJr8f315BbdARn8dTit9XNxeUedNWD6ioLSjbXz1U3"
 
 [registry]
 url = "https://anchor.projectserum.com"
@@ -10,4 +9,9 @@ cluster = "localnet"
 wallet = "~/.config/renec/id.json"
 
 [scripts]
-test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/voucher-nft.ts"
+test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/mint-voucher.ts"
+#test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/voucher-nft.ts"
+
+[[test.genesis]]
+address = "metaXfaoQatFJP9xiuYRsKkHYgS5NqqcfxFbLGS5LdN"
+program = "tests/mpl_token_metadata.so"

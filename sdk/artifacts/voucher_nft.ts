@@ -53,8 +53,78 @@ export type VoucherNft = {
                     type: 'string';
                 },
                 {
+                    name: 'bump';
+                    type: 'u8';
+                },
+                {
                     name: 'operator';
                     type: 'publicKey';
+                },
+            ];
+        },
+        {
+            name: 'mintVoucher';
+            accounts: [
+                {
+                    name: 'vault';
+                    isMut: false;
+                    isSigner: false;
+                },
+                {
+                    name: 'operator';
+                    isMut: true;
+                    isSigner: true;
+                },
+                {
+                    name: 'mint';
+                    isMut: true;
+                    isSigner: true;
+                },
+                {
+                    name: 'vaultTokenAccount';
+                    isMut: true;
+                    isSigner: false;
+                },
+                {
+                    name: 'metadataAccount';
+                    isMut: true;
+                    isSigner: false;
+                },
+                {
+                    name: 'masterEdition';
+                    isMut: true;
+                    isSigner: false;
+                },
+                {
+                    name: 'tokenMetadataProgram';
+                    isMut: false;
+                    isSigner: false;
+                },
+                {
+                    name: 'systemProgram';
+                    isMut: false;
+                    isSigner: false;
+                },
+                {
+                    name: 'tokenProgram';
+                    isMut: false;
+                    isSigner: false;
+                },
+                {
+                    name: 'associatedTokenProgram';
+                    isMut: false;
+                    isSigner: false;
+                },
+                {
+                    name: 'rent';
+                    isMut: false;
+                    isSigner: false;
+                },
+            ];
+            args: [
+                {
+                    name: 'seed';
+                    type: 'string';
                 },
             ];
         },
@@ -88,6 +158,10 @@ export type VoucherNft = {
                         type: 'publicKey';
                     },
                     {
+                        name: 'bump';
+                        type: 'u8';
+                    },
+                    {
                         name: 'seed';
                         type: 'string';
                     },
@@ -111,7 +185,7 @@ export type VoucherNft = {
                         name: 'OnlyAdmin';
                     },
                     {
-                        name: 'SeedTooLong';
+                        name: 'OnlyOperator';
                     },
                 ];
             };
@@ -174,8 +248,78 @@ export const IDL: VoucherNft = {
                     type: 'string',
                 },
                 {
+                    name: 'bump',
+                    type: 'u8',
+                },
+                {
                     name: 'operator',
                     type: 'publicKey',
+                },
+            ],
+        },
+        {
+            name: 'mintVoucher',
+            accounts: [
+                {
+                    name: 'vault',
+                    isMut: false,
+                    isSigner: false,
+                },
+                {
+                    name: 'operator',
+                    isMut: true,
+                    isSigner: true,
+                },
+                {
+                    name: 'mint',
+                    isMut: true,
+                    isSigner: true,
+                },
+                {
+                    name: 'vaultTokenAccount',
+                    isMut: true,
+                    isSigner: false,
+                },
+                {
+                    name: 'metadataAccount',
+                    isMut: true,
+                    isSigner: false,
+                },
+                {
+                    name: 'masterEdition',
+                    isMut: true,
+                    isSigner: false,
+                },
+                {
+                    name: 'tokenMetadataProgram',
+                    isMut: false,
+                    isSigner: false,
+                },
+                {
+                    name: 'systemProgram',
+                    isMut: false,
+                    isSigner: false,
+                },
+                {
+                    name: 'tokenProgram',
+                    isMut: false,
+                    isSigner: false,
+                },
+                {
+                    name: 'associatedTokenProgram',
+                    isMut: false,
+                    isSigner: false,
+                },
+                {
+                    name: 'rent',
+                    isMut: false,
+                    isSigner: false,
+                },
+            ],
+            args: [
+                {
+                    name: 'seed',
+                    type: 'string',
                 },
             ],
         },
@@ -209,6 +353,10 @@ export const IDL: VoucherNft = {
                         type: 'publicKey',
                     },
                     {
+                        name: 'bump',
+                        type: 'u8',
+                    },
+                    {
                         name: 'seed',
                         type: 'string',
                     },
@@ -232,7 +380,7 @@ export const IDL: VoucherNft = {
                         name: 'OnlyAdmin',
                     },
                     {
-                        name: 'SeedTooLong',
+                        name: 'OnlyOperator',
                     },
                 ],
             },

@@ -3,7 +3,7 @@ import { BorshAccountsCoder, Idl } from '@project-serum/anchor';
 
 import { VoucherNft } from '../artifacts/voucher_nft';
 import IDL from '../artifacts/voucher_nft.json';
-import { PublicKey } from '@solana/web3.js';
+import { PublicKey, Keypair } from '@solana/web3.js';
 
 export type VoucherNftType = VoucherNft;
 export const VoucherNftIDL = IDL as Idl;
@@ -25,7 +25,7 @@ export const configurations: Map<NetworkType, Configuration> = new Map<NetworkTy
         NetworkType.MainNet,
         {
             url: 'https://api-mainnet-beta.renec.foundation:8899/',
-            programId: 'GgYWQNtiG5psgd2ZcVRNBNzCW28wBrhc6ntMMamBuSJU',
+            programId: '3wFJr8f315BbdARn8dTit9XNxeUedNWD6ioLSjbXz1U3',
             keypairPath: '~/.config/renec/id.json',
         },
     ],
@@ -33,7 +33,7 @@ export const configurations: Map<NetworkType, Configuration> = new Map<NetworkTy
         NetworkType.TestNet,
         {
             url: 'https://api-testnet.renec.foundation:8899/',
-            programId: 'GgYWQNtiG5psgd2ZcVRNBNzCW28wBrhc6ntMMamBuSJU',
+            programId: '3wFJr8f315BbdARn8dTit9XNxeUedNWD6ioLSjbXz1U3',
             keypairPath: '~/.config/renec/id.json',
         },
     ],
@@ -41,7 +41,7 @@ export const configurations: Map<NetworkType, Configuration> = new Map<NetworkTy
         NetworkType.LocalNet,
         {
             url: 'http://127.0.0.1:8899',
-            programId: 'GgYWQNtiG5psgd2ZcVRNBNzCW28wBrhc6ntMMamBuSJU',
+            programId: '3wFJr8f315BbdARn8dTit9XNxeUedNWD6ioLSjbXz1U3',
             keypairPath: '~/.config/renec/id.json',
         },
     ],
@@ -62,5 +62,17 @@ export type AddVaultParams = {
     vault: PublicKey;
     admin: PublicKey;
     operator: PublicKey;
+    seed: string;
+    bump: number;
+};
+
+export type MintVoucherParams = {
+    vault: PublicKey;
+    operator: PublicKey;
+    vaultTokenAccount: PublicKey;
+    mint: Keypair;
+    metadataAccount: PublicKey;
+    masterEdition: PublicKey;
+    tokenMetadataProgram: PublicKey;
     seed: string;
 };

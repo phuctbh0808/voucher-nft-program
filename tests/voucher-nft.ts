@@ -37,6 +37,7 @@ describe('voucher-nft', () => {
             operator: operator.publicKey,
             seed: vaultSeed,
             vault: fixture.pda.vault(vaultSeed).key,
+            bump: fixture.pda.vault(vaultSeed).bump,
         });
         const transaction = new anchor.web3.Transaction().add(addVaultIns);
         try {
@@ -63,9 +64,11 @@ describe('voucher-nft', () => {
         const vaultSeed = 'VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV';
         const tx = await fixture.addVault(vaultSeed, operator.publicKey);
         console.log('Add vault success at ', tx);
+        const { bump } = fixture.pda.vault(vaultSeed);
 
         const vaultData = await fixture.getVaultData(vaultSeed);
         assert.equal(vaultData.seed, vaultSeed);
         assert.equal(vaultData.operator.toBase58(), operator.publicKey.toBase58());
+        assert.equal(vaultData.bump, bump, 'Bump mismatch');
     });
 });

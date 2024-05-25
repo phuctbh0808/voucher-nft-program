@@ -44,6 +44,9 @@ anchor build
 cp target/idl/$PROGRAM_NAME_UNDERSCORE.json app/src/artifacts
 cp target/types/$PROGRAM_NAME_UNDERSCORE.ts app/src/artifacts
 
+cp target/idl/$PROGRAM_NAME_UNDERSCORE.json sdk/artifacts
+cp target/types/$PROGRAM_NAME_UNDERSCORE.ts sdk/artifacts
+
 
 APP_CONFIG_FILE="app/src/artifacts/config.json"
 # Update the PROGRAM_ID in the config.json file
