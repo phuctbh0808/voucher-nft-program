@@ -58,7 +58,18 @@ pub struct MintVoucher<'info> {
     pub rent: Sysvar<'info, Rent>,
 }
 
-pub fn handler(ctx: Context<MintVoucher>, seed: String) -> ProgramResult {
+#[derive(AnchorSerialize, AnchorDeserialize, PartialEq, Clone)]
+pub struct MintVoucherParams {
+    pub name: String,
+    pub symbol: String,
+    pub uri: String,
+}
+
+pub fn handler(
+    ctx: Context<MintVoucher>,
+    seed: String,
+    params: MintVoucherParams,
+) -> ProgramResult {
     let vault = &ctx.accounts.vault;
     let mint = &ctx.accounts.mint;
     let operator = &ctx.accounts.operator;
@@ -104,9 +115,9 @@ pub fn handler(ctx: Context<MintVoucher>, seed: String) -> ProgramResult {
             vault.key(),
             operator.key(),
             vault.key(),
-            "Voucher".to_string(),
-            "VC".to_string(),
-            "VC_URI".to_string(),
+            params.name.to_string(),
+            params.symbol.to_string(),
+            params.uri.to_string(),
             Some(creator),
             0,
             true,

@@ -126,6 +126,12 @@ export type VoucherNft = {
                     name: 'seed';
                     type: 'string';
                 },
+                {
+                    name: 'params';
+                    type: {
+                        defined: 'MintVoucherParams';
+                    };
+                },
             ];
         },
     ];
@@ -176,6 +182,26 @@ export type VoucherNft = {
         },
     ];
     types: [
+        {
+            name: 'MintVoucherParams';
+            type: {
+                kind: 'struct';
+                fields: [
+                    {
+                        name: 'name';
+                        type: 'string';
+                    },
+                    {
+                        name: 'symbol';
+                        type: 'string';
+                    },
+                    {
+                        name: 'uri';
+                        type: 'string';
+                    },
+                ];
+            };
+        },
         {
             name: 'VoucherNftError';
             type: {
@@ -321,6 +347,12 @@ export const IDL: VoucherNft = {
                     name: 'seed',
                     type: 'string',
                 },
+                {
+                    name: 'params',
+                    type: {
+                        defined: 'MintVoucherParams',
+                    },
+                },
             ],
         },
     ],
@@ -371,6 +403,26 @@ export const IDL: VoucherNft = {
         },
     ],
     types: [
+        {
+            name: 'MintVoucherParams',
+            type: {
+                kind: 'struct',
+                fields: [
+                    {
+                        name: 'name',
+                        type: 'string',
+                    },
+                    {
+                        name: 'symbol',
+                        type: 'string',
+                    },
+                    {
+                        name: 'uri',
+                        type: 'string',
+                    },
+                ],
+            },
+        },
         {
             name: 'VoucherNftError',
             type: {
