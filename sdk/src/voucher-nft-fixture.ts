@@ -29,11 +29,13 @@ export class VoucherNftFixture {
 
     async initialize(): Promise<string> {
         const { key: config } = this.pda.config();
+        const { key: authorator } = this.pda.authorator();
         try {
             return await this.program.methods
                 .initialize()
                 .accounts({
                     config,
+                    authorator,
                     admin: this.provider.publicKey,
                 })
                 .rpc();
@@ -46,14 +48,13 @@ export class VoucherNftFixture {
     async addVault(seed: string, operator: PublicKey): Promise<string> {
         try {
             const { key: config } = this.pda.config();
-            const { key: vault, bump } = this.pda.vault(seed);
+            const { key: vault } = this.pda.vault(seed);
             const addVaultIns = await addVaultIx(this.program, {
                 admin: this.provider.publicKey,
                 config,
                 operator: operator,
                 seed: seed,
                 vault: vault,
-                bump,
             });
 
             const transaction = new anchor.web3.Transaction().add(addVaultIns);
@@ -94,6 +95,16 @@ export class VoucherNftFixture {
         const { key: config } = this.pda.config();
         try {
             return await this.program.account.config.fetch(config);
+        } catch (error) {
+            this.verbose && console.error(error);
+            throw error;
+        }
+    }
+
+    async getAuthoratorData() {
+        const { key: authorator } = this.pda.authorator();
+        try {
+            return await this.program.account.authorator.fetch(authorator);
         } catch (error) {
             this.verbose && console.error(error);
             throw error;

@@ -37,7 +37,6 @@ describe('voucher-nft', () => {
             operator: operator.publicKey,
             seed: vaultSeed,
             vault: fixture.pda.vault(vaultSeed).key,
-            bump: fixture.pda.vault(vaultSeed).bump,
         });
         const transaction = new anchor.web3.Transaction().add(addVaultIns);
         try {

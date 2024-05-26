@@ -57,13 +57,12 @@ export type ConfigData = {
     admin: anchor.web3.PublicKey;
 };
 
-export type AddVaultParams = {
+export type AddVaultInstructionParams = {
     config: PublicKey;
     vault: PublicKey;
     admin: PublicKey;
     operator: PublicKey;
     seed: string;
-    bump: number;
 };
 
 export type MetadataParams = {

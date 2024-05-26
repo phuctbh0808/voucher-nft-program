@@ -25,6 +25,17 @@ export class PDA {
         };
     };
 
+    authorator = (): PDAInfo => {
+        const [pda, bump] = anchor.web3.PublicKey.findProgramAddressSync(
+            [Buffer.from(Constants.AUTHORATOR_SEED)],
+            this.programId
+        );
+        return {
+            key: pda,
+            bump: bump,
+        };
+    };
+
     vault = (seed: string): PDAInfo => {
         const [pda, bump] = anchor.web3.PublicKey.findProgramAddressSync(
             [Buffer.from(Constants.VAULT_SEED), Buffer.from(seed)],
