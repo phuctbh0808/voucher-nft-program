@@ -66,7 +66,13 @@ export type AddVaultParams = {
     bump: number;
 };
 
-export type MintVoucherParams = {
+export type MetadataParams = {
+    name: string;
+    symbol: string;
+    uri: string;
+};
+
+export type MintVoucherInstructionParams = {
     vault: PublicKey;
     operator: PublicKey;
     vaultTokenAccount: PublicKey;
@@ -75,4 +81,5 @@ export type MintVoucherParams = {
     masterEdition: PublicKey;
     tokenMetadataProgram: PublicKey;
     seed: string;
+    params: MetadataParams;
 };

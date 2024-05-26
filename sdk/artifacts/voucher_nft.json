@@ -129,7 +129,7 @@
         {
           "name": "params",
           "type": {
-            "defined": "MintVoucherParams"
+            "defined": "MetadataParams"
           }
         }
       ]
@@ -189,7 +189,7 @@
   ],
   "types": [
     {
-      "name": "MintVoucherParams",
+      "name": "MetadataParams",
       "type": {
         "kind": "struct",
         "fields": [

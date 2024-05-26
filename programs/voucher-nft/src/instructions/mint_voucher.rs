@@ -59,17 +59,13 @@ pub struct MintVoucher<'info> {
 }
 
 #[derive(AnchorSerialize, AnchorDeserialize, PartialEq, Clone)]
-pub struct MintVoucherParams {
+pub struct MetadataParams {
     pub name: String,
     pub symbol: String,
     pub uri: String,
 }
 
-pub fn handler(
-    ctx: Context<MintVoucher>,
-    seed: String,
-    params: MintVoucherParams,
-) -> ProgramResult {
+pub fn handler(ctx: Context<MintVoucher>, seed: String, params: MetadataParams) -> ProgramResult {
     let vault = &ctx.accounts.vault;
     let mint = &ctx.accounts.mint;
     let operator = &ctx.accounts.operator;

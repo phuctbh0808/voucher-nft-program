@@ -129,7 +129,7 @@ export type VoucherNft = {
         {
           "name": "params",
           "type": {
-            "defined": "MintVoucherParams"
+            "defined": "MetadataParams"
           }
         }
       ]
@@ -189,7 +189,7 @@ export type VoucherNft = {
   ],
   "types": [
     {
-      "name": "MintVoucherParams",
+      "name": "MetadataParams",
       "type": {
         "kind": "struct",
         "fields": [
@@ -356,7 +356,7 @@ export const IDL: VoucherNft = {
         {
           "name": "params",
           "type": {
-            "defined": "MintVoucherParams"
+            "defined": "MetadataParams"
           }
         }
       ]
@@ -416,7 +416,7 @@ export const IDL: VoucherNft = {
   ],
   "types": [
     {
-      "name": "MintVoucherParams",
+      "name": "MetadataParams",
       "type": {
         "kind": "struct",
         "fields": [

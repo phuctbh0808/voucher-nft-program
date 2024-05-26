@@ -30,7 +30,7 @@ pub mod voucher_nft {
     pub fn mint_voucher(
         ctx: Context<MintVoucher>,
         seed: String,
-        params: MintVoucherParams,
+        params: MetadataParams,
     ) -> ProgramResult {
         mint_voucher::handler(ctx, seed, params)
     }
