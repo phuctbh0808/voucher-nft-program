@@ -6,4 +6,8 @@ pub enum VoucherNftError {
     OnlyAdmin,
     #[msg("Only Operator")]
     OnlyOperator,
+    #[msg("Invalid Account Argument")]
+    InvalidAccountArgument,
+    #[msg("Account Not Initialized")]
+    AccountNotInitialized,
 }

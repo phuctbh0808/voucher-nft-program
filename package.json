@@ -1,6 +1,7 @@
 {
     "scripts": {
-        "lint:fix": "prettier --config .prettierrc */*.ts -w && prettier --config .prettierrc */**/*.ts -w"
+        "lint:fix": "prettier --config .prettierrc */*.ts -w && prettier --config .prettierrc */**/*.ts -w",
+        "format": "yarn lint:fix && cargo fmt"
     },
     "dependencies": {
         "@project-serum/anchor": "0.25.0",

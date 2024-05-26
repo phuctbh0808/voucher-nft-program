@@ -140,6 +140,47 @@ export type VoucherNft = {
                 },
             ];
         },
+        {
+            name: 'addVoucherRepayInformation';
+            accounts: [
+                {
+                    name: 'vault';
+                    isMut: false;
+                    isSigner: false;
+                },
+                {
+                    name: 'operator';
+                    isMut: true;
+                    isSigner: true;
+                },
+                {
+                    name: 'mint';
+                    isMut: false;
+                    isSigner: false;
+                },
+                {
+                    name: 'metadataAccount';
+                    isMut: false;
+                    isSigner: false;
+                },
+                {
+                    name: 'masterEdition';
+                    isMut: false;
+                    isSigner: false;
+                },
+                {
+                    name: 'tokenMetadataProgram';
+                    isMut: false;
+                    isSigner: false;
+                },
+                {
+                    name: 'systemProgram';
+                    isMut: false;
+                    isSigner: false;
+                },
+            ];
+            args: [];
+        },
     ];
     accounts: [
         {
@@ -198,6 +239,44 @@ export type VoucherNft = {
                 ];
             };
         },
+        {
+            name: 'repayVoucher';
+            type: {
+                kind: 'struct';
+                fields: [
+                    {
+                        name: 'discountPercentage';
+                        type: 'u8';
+                    },
+                    {
+                        name: 'maximumAmount';
+                        type: 'u32';
+                    },
+                    {
+                        name: 'startTime';
+                        type: 'i64';
+                    },
+                    {
+                        name: 'endTime';
+                        type: 'i64';
+                    },
+                    {
+                        name: 'nftMint';
+                        type: 'publicKey';
+                    },
+                    {
+                        name: 'authorator';
+                        type: 'publicKey';
+                    },
+                    {
+                        name: 'reserve';
+                        type: {
+                            array: ['u128', 6];
+                        };
+                    },
+                ];
+            };
+        },
     ];
     types: [
         {
@@ -230,6 +309,12 @@ export type VoucherNft = {
                     },
                     {
                         name: 'OnlyOperator';
+                    },
+                    {
+                        name: 'InvalidAccountArgument';
+                    },
+                    {
+                        name: 'AccountNotInitialized';
                     },
                 ];
             };
@@ -379,6 +464,47 @@ export const IDL: VoucherNft = {
                 },
             ],
         },
+        {
+            name: 'addVoucherRepayInformation',
+            accounts: [
+                {
+                    name: 'vault',
+                    isMut: false,
+                    isSigner: false,
+                },
+                {
+                    name: 'operator',
+                    isMut: true,
+                    isSigner: true,
+                },
+                {
+                    name: 'mint',
+                    isMut: false,
+                    isSigner: false,
+                },
+                {
+                    name: 'metadataAccount',
+                    isMut: false,
+                    isSigner: false,
+                },
+                {
+                    name: 'masterEdition',
+                    isMut: false,
+                    isSigner: false,
+                },
+                {
+                    name: 'tokenMetadataProgram',
+                    isMut: false,
+                    isSigner: false,
+                },
+                {
+                    name: 'systemProgram',
+                    isMut: false,
+                    isSigner: false,
+                },
+            ],
+            args: [],
+        },
     ],
     accounts: [
         {
@@ -437,6 +563,44 @@ export const IDL: VoucherNft = {
                 ],
             },
         },
+        {
+            name: 'repayVoucher',
+            type: {
+                kind: 'struct',
+                fields: [
+                    {
+                        name: 'discountPercentage',
+                        type: 'u8',
+                    },
+                    {
+                        name: 'maximumAmount',
+                        type: 'u32',
+                    },
+                    {
+                        name: 'startTime',
+                        type: 'i64',
+                    },
+                    {
+                        name: 'endTime',
+                        type: 'i64',
+                    },
+                    {
+                        name: 'nftMint',
+                        type: 'publicKey',
+                    },
+                    {
+                        name: 'authorator',
+                        type: 'publicKey',
+                    },
+                    {
+                        name: 'reserve',
+                        type: {
+                            array: ['u128', 6],
+                        },
+                    },
+                ],
+            },
+        },
     ],
     types: [
         {
@@ -469,6 +633,12 @@ export const IDL: VoucherNft = {
                     },
                     {
                         name: 'OnlyOperator',
+                    },
+                    {
+                        name: 'InvalidAccountArgument',
+                    },
+                    {
+                        name: 'AccountNotInitialized',
                     },
                 ],
             },
