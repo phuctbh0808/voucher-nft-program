@@ -72,6 +72,11 @@
           "isSigner": false
         },
         {
+          "name": "authorator",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
           "name": "operator",
           "isMut": true,
           "isSigner": true

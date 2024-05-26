@@ -74,6 +74,7 @@ export type MetadataParams = {
 export type MintVoucherInstructionParams = {
     vault: PublicKey;
     operator: PublicKey;
+    authorator: PublicKey;
     vaultTokenAccount: PublicKey;
     mint: Keypair;
     metadataAccount: PublicKey;

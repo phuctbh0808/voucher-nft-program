@@ -20,6 +20,7 @@ export async function mintVoucherIx(program: Program<VoucherNftType>, params: Mi
         .accounts({
             vault: params.vault,
             operator: params.operator,
+            authorator: params.authorator,
             vaultTokenAccount: params.vaultTokenAccount,
             metadataAccount: params.metadataAccount,
             masterEdition: params.masterEdition,
