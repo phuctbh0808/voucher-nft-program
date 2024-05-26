@@ -125,6 +125,12 @@ export type VoucherNft = {
         {
           "name": "seed",
           "type": "string"
+        },
+        {
+          "name": "params",
+          "type": {
+            "defined": "MetadataParams"
+          }
         }
       ]
     }
@@ -182,6 +188,26 @@ export type VoucherNft = {
     }
   ],
   "types": [
+    {
+      "name": "MetadataParams",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "symbol",
+            "type": "string"
+          },
+          {
+            "name": "uri",
+            "type": "string"
+          }
+        ]
+      }
+    },
     {
       "name": "VoucherNftError",
       "type": {
@@ -326,6 +352,12 @@ export const IDL: VoucherNft = {
         {
           "name": "seed",
           "type": "string"
+        },
+        {
+          "name": "params",
+          "type": {
+            "defined": "MetadataParams"
+          }
         }
       ]
     }
@@ -383,6 +415,26 @@ export const IDL: VoucherNft = {
     }
   ],
   "types": [
+    {
+      "name": "MetadataParams",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "symbol",
+            "type": "string"
+          },
+          {
+            "name": "uri",
+            "type": "string"
+          }
+        ]
+      }
+    },
     {
       "name": "VoucherNftError",
       "type": {

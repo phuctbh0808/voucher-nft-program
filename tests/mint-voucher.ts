@@ -2,7 +2,7 @@ import * as anchor from '@project-serum/anchor';
 import * as token from '@solana/spl-token';
 import * as assert from 'assert';
 import { VoucherNftFixture, VoucherNftFixtureBuilder } from '../sdk/src/voucher-nft-fixture';
-import { NetworkType } from '../sdk/src/types';
+import { MetadataParams, NetworkType } from '../sdk/src/types';
 import { airdrop } from '../sdk/src/utils';
 import { Metadata } from '@renec-foundation/mpl-token-metadata';
 import { SendTransactionError } from '@solana/web3.js';
@@ -11,12 +11,18 @@ describe('mint-voucher', () => {
     let fixture: VoucherNftFixture;
     let operator: anchor.web3.Keypair;
     let vaultSeed: string;
+    let metadataParams: MetadataParams;
 
     before(async () => {
         const fixtureBuilder = new VoucherNftFixtureBuilder().withNetwork(NetworkType.LocalNet);
         fixture = await fixtureBuilder.build();
         operator = anchor.web3.Keypair.generate();
         vaultSeed = 'Vault1';
+        metadataParams = {
+            name: 'Voucher',
+            symbol: 'VC',
+            uri: 'Voucher_URI',
+        };
         await airdrop(fixture.provider.connection, operator.publicKey, 100);
     });
 
@@ -46,7 +52,7 @@ describe('mint-voucher', () => {
         const operator2 = anchor.web3.Keypair.generate();
         await airdrop(fixture.provider.connection, operator2.publicKey, 100);
         try {
-            await fixture.mintVoucher(vaultSeed, operator2, mint);
+            await fixture.mintVoucher(vaultSeed, operator2, mint, metadataParams);
             assert.fail('Mint voucher should fail');
         } catch (error) {
             assert.ok(error instanceof SendTransactionError);
@@ -59,7 +65,7 @@ describe('mint-voucher', () => {
         const { key: vault } = fixture.pda.vault(vaultSeed);
         const { key: metadata } = await fixture.pda.metadata(mint.publicKey);
         const { key: masterEdition } = await fixture.pda.masterEdition(mint.publicKey);
-        const tx = await fixture.mintVoucher(vaultSeed, operator, mint);
+        const tx = await fixture.mintVoucher(vaultSeed, operator, mint, metadataParams);
         console.log('Add mint success at tx', tx);
 
         const mintData = await token.getMint(fixture.connection, mint.publicKey);
@@ -78,9 +84,9 @@ describe('mint-voucher', () => {
         assert.equal(Number(mintData.supply), 1, 'Supply must be one');
 
         const metadataData = await Metadata.findByMint(fixture.connection, mint.publicKey);
-        assert.equal(metadataData.data.data.name, 'Voucher', 'Name must be Voucher');
-        assert.equal(metadataData.data.data.symbol, 'VC', 'Symbol must be VC');
-        assert.equal(metadataData.data.data.uri, 'VC_URI', 'URI must be VC_URI');
+        assert.equal(metadataData.data.data.name, metadataParams.name, 'Name must be Voucher');
+        assert.equal(metadataData.data.data.symbol, metadataParams.symbol, 'Symbol must be VC');
+        assert.equal(metadataData.data.data.uri, metadataParams.uri, 'URI must be VC_URI');
         assert.equal(metadataData.data.data.creators.length, 1, 'Creators length must be 1');
         assert.equal(metadataData.data.data.creators[0].address, vault.toBase58(), 'Creators must be vault');
         assert.equal(metadataData.data.data.creators[0].verified, true, 'Creators must be verified');
