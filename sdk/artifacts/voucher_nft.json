@@ -11,6 +11,11 @@
           "isSigner": false
         },
         {
+          "name": "authorator",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
           "name": "admin",
           "isMut": true,
           "isSigner": true
@@ -51,10 +56,6 @@
         {
           "name": "seed",
           "type": "string"
-        },
-        {
-          "name": "bump",
-          "type": "u8"
         },
         {
           "name": "operator",
@@ -136,6 +137,18 @@
     }
   ],
   "accounts": [
+    {
+      "name": "Authorator",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
     {
       "name": "Config",
       "type": {

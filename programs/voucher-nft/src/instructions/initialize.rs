@@ -12,6 +12,15 @@ pub struct Initialize<'info> {
     )]
     pub config: Account<'info, Config>,
 
+    #[account(
+        init,
+        payer = admin,
+        space = Authorator::SPACE,
+        seeds = [Authorator::SEED.as_bytes()],
+        bump,
+    )]
+    pub authorator: Account<'info, Authorator>,
+
     #[account(mut)]
     pub admin: Signer<'info>,
 
@@ -20,6 +29,9 @@ pub struct Initialize<'info> {
 
 pub fn handler(ctx: Context<Initialize>) -> ProgramResult {
     let config = &mut ctx.accounts.config;
-    config.admin = *ctx.accounts.admin.key;
+    let (_, bump) = Pubkey::find_program_address(&[Authorator::SEED.as_bytes()], ctx.program_id);
+    let authorator = &mut ctx.accounts.authorator;
+    authorator.initialize(bump)?;
+    config.initialize(ctx.accounts.admin.key())?;
     Ok(())
 }

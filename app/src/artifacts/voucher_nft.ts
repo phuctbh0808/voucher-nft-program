@@ -11,6 +11,11 @@ export type VoucherNft = {
           "isSigner": false
         },
         {
+          "name": "authorator",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
           "name": "admin",
           "isMut": true,
           "isSigner": true
@@ -51,10 +56,6 @@ export type VoucherNft = {
         {
           "name": "seed",
           "type": "string"
-        },
-        {
-          "name": "bump",
-          "type": "u8"
         },
         {
           "name": "operator",
@@ -136,6 +137,18 @@ export type VoucherNft = {
     }
   ],
   "accounts": [
+    {
+      "name": "authorator",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
     {
       "name": "config",
       "type": {
@@ -238,6 +251,11 @@ export const IDL: VoucherNft = {
           "isSigner": false
         },
         {
+          "name": "authorator",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
           "name": "admin",
           "isMut": true,
           "isSigner": true
@@ -278,10 +296,6 @@ export const IDL: VoucherNft = {
         {
           "name": "seed",
           "type": "string"
-        },
-        {
-          "name": "bump",
-          "type": "u8"
         },
         {
           "name": "operator",
@@ -363,6 +377,18 @@ export const IDL: VoucherNft = {
     }
   ],
   "accounts": [
+    {
+      "name": "authorator",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
     {
       "name": "config",
       "type": {
