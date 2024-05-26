@@ -11,6 +11,11 @@ export type VoucherNft = {
           "isSigner": false
         },
         {
+          "name": "authorator",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
           "name": "admin",
           "isMut": true,
           "isSigner": true
@@ -53,10 +58,6 @@ export type VoucherNft = {
           "type": "string"
         },
         {
-          "name": "bump",
-          "type": "u8"
-        },
-        {
           "name": "operator",
           "type": "publicKey"
         }
@@ -67,6 +68,11 @@ export type VoucherNft = {
       "accounts": [
         {
           "name": "vault",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "authorator",
           "isMut": false,
           "isSigner": false
         },
@@ -136,6 +142,18 @@ export type VoucherNft = {
     }
   ],
   "accounts": [
+    {
+      "name": "authorator",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
     {
       "name": "config",
       "type": {
@@ -238,6 +256,11 @@ export const IDL: VoucherNft = {
           "isSigner": false
         },
         {
+          "name": "authorator",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
           "name": "admin",
           "isMut": true,
           "isSigner": true
@@ -280,10 +303,6 @@ export const IDL: VoucherNft = {
           "type": "string"
         },
         {
-          "name": "bump",
-          "type": "u8"
-        },
-        {
           "name": "operator",
           "type": "publicKey"
         }
@@ -294,6 +313,11 @@ export const IDL: VoucherNft = {
       "accounts": [
         {
           "name": "vault",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "authorator",
           "isMut": false,
           "isSigner": false
         },
@@ -363,6 +387,18 @@ export const IDL: VoucherNft = {
     }
   ],
   "accounts": [
+    {
+      "name": "authorator",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
     {
       "name": "config",
       "type": {

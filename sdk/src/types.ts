@@ -57,13 +57,12 @@ export type ConfigData = {
     admin: anchor.web3.PublicKey;
 };
 
-export type AddVaultParams = {
+export type AddVaultInstructionParams = {
     config: PublicKey;
     vault: PublicKey;
     admin: PublicKey;
     operator: PublicKey;
     seed: string;
-    bump: number;
 };
 
 export type MetadataParams = {
@@ -75,6 +74,7 @@ export type MetadataParams = {
 export type MintVoucherInstructionParams = {
     vault: PublicKey;
     operator: PublicKey;
+    authorator: PublicKey;
     vaultTokenAccount: PublicKey;
     mint: Keypair;
     metadataAccount: PublicKey;

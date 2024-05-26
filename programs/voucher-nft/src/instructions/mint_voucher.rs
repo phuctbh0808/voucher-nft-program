@@ -4,7 +4,9 @@ use crate::states::*;
 use anchor_lang::prelude::*;
 use anchor_spl::associated_token::AssociatedToken;
 use anchor_spl::token::{self, Mint, MintTo, Token, TokenAccount};
-use mpl_token_metadata::instruction::{create_master_edition_v3, create_metadata_accounts_v2};
+use mpl_token_metadata::instruction::{
+    create_master_edition_v3, create_metadata_accounts_v2, sign_metadata,
+};
 use solana_program::program::invoke_signed;
 
 #[derive(Accounts)]
@@ -15,6 +17,12 @@ pub struct MintVoucher<'info> {
         bump,
     )]
     pub vault: Box<Account<'info, Vault>>,
+
+    #[account(
+        seeds = [Authorator::SEED.as_bytes()],
+        bump,
+    )]
+    pub authorator: Box<Account<'info, Authorator>>,
 
     #[account(
         mut,
@@ -69,6 +77,7 @@ pub fn handler(ctx: Context<MintVoucher>, seed: String, params: MetadataParams) 
     let vault = &ctx.accounts.vault;
     let mint = &ctx.accounts.mint;
     let operator = &ctx.accounts.operator;
+    let authorator = &ctx.accounts.authorator;
     let metadata_account = &ctx.accounts.metadata_account;
     let token_metadata_program = &ctx.accounts.token_metadata_program;
     msg!("Minting voucher NFT {} with seed {}", mint.key(), seed);
@@ -98,11 +107,19 @@ pub fn handler(ctx: Context<MintVoucher>, seed: String, params: MetadataParams) 
         ctx.accounts.system_program.to_account_info(),
         ctx.accounts.rent.to_account_info(),
     ];
-    let creator = vec![mpl_token_metadata::state::Creator {
-        address: vault.key(),
-        verified: true,
-        share: 100,
-    }];
+    let creators = vec![
+        mpl_token_metadata::state::Creator {
+            address: vault.key(),
+            verified: true,
+            share: 0,
+        },
+        mpl_token_metadata::state::Creator {
+            address: authorator.key(),
+            verified: false,
+            share: 100,
+        },
+    ];
+
     invoke_signed(
         &create_metadata_accounts_v2(
             token_metadata_program.key(),
@@ -114,7 +131,7 @@ pub fn handler(ctx: Context<MintVoucher>, seed: String, params: MetadataParams) 
             params.name.to_string(),
             params.symbol.to_string(),
             params.uri.to_string(),
-            Some(creator),
+            Some(creators),
             0,
             true,
             true,
@@ -123,6 +140,21 @@ pub fn handler(ctx: Context<MintVoucher>, seed: String, params: MetadataParams) 
         ),
         metadata_account_infos.as_slice(),
         &[&[Vault::SEED.as_bytes(), seed.as_bytes(), &[vault.bump]]],
+    )?;
+
+    msg!("Signing creator with authorator");
+    let sign_metadata_infos = vec![
+        metadata_account.to_account_info(),
+        authorator.to_account_info(),
+    ];
+    invoke_signed(
+        &sign_metadata(
+            token_metadata_program.key(),
+            metadata_account.key(),
+            authorator.key(),
+        ),
+        sign_metadata_infos.as_slice(),
+        &[&[Authorator::SEED.as_bytes(), &[authorator.bump]]],
     )?;
 
     msg!("Creating master edition");

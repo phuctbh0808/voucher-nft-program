@@ -65,6 +65,7 @@ describe('mint-voucher', () => {
         const { key: vault } = fixture.pda.vault(vaultSeed);
         const { key: metadata } = await fixture.pda.metadata(mint.publicKey);
         const { key: masterEdition } = await fixture.pda.masterEdition(mint.publicKey);
+        const { key: authority } = await fixture.pda.authorator();
         const tx = await fixture.mintVoucher(vaultSeed, operator, mint, metadataParams);
         console.log('Add mint success at tx', tx);
 
@@ -87,13 +88,17 @@ describe('mint-voucher', () => {
         assert.equal(metadataData.data.data.name, metadataParams.name, 'Name must be Voucher');
         assert.equal(metadataData.data.data.symbol, metadataParams.symbol, 'Symbol must be VC');
         assert.equal(metadataData.data.data.uri, metadataParams.uri, 'URI must be VC_URI');
-        assert.equal(metadataData.data.data.creators.length, 1, 'Creators length must be 1');
-        assert.equal(metadataData.data.data.creators[0].address, vault.toBase58(), 'Creators must be vault');
-        assert.equal(metadataData.data.data.creators[0].verified, true, 'Creators must be verified');
-        assert.equal(metadataData.data.data.creators[0].share, 100, 'Creators must be 100 share');
         assert.equal(metadataData.data.updateAuthority, vault.toBase58(), 'Update Authority must be vault');
         assert.equal(metadataData.pubkey.toBase58(), metadata.toBase58(), 'Metadata pubkey must be equal to metadata');
         assert.equal(metadataData.data.mint, mint.publicKey.toBase58(), 'Mint must be mint public key');
+        assert.equal(metadataData.data.data.creators.length, 2, 'Creators length must be 2');
+        assert.equal(metadataData.data.data.creators[0].address, vault.toBase58(), 'Creators 0 must be vault');
+        assert.equal(metadataData.data.data.creators[0].verified, true, 'Creators 0 must be verified');
+        assert.equal(metadataData.data.data.creators[0].share, 0, 'Creators 0 must be 0 share');
+
+        assert.equal(metadataData.data.data.creators[1].address, authority.toBase58(), 'Creators 1 must be vault');
+        assert.equal(metadataData.data.data.creators[1].verified, true, 'Creators 1 must be verified');
+        assert.equal(metadataData.data.data.creators[1].share, 100, 'Creators 1 must be 100 share');
 
         const vaultTokenAccount = await token.getAssociatedTokenAddress(mint.publicKey, vault, true);
         const tokenAccount = await token.getAccount(fixture.connection, vaultTokenAccount);

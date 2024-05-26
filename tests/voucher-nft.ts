@@ -27,6 +27,10 @@ describe('voucher-nft', () => {
             fixture.provider.publicKey.toBase58(),
             'expect admin to be provider.publicKey'
         );
+
+        const { bump } = fixture.pda.authorator();
+        const authoratorData = await fixture.getAuthoratorData();
+        assert.equal(authoratorData.bump, bump, 'Bump authorator mismatch');
     });
 
     it('FAILED OnlyAdmin: Add vault failed because not admin', async () => {
@@ -37,7 +41,6 @@ describe('voucher-nft', () => {
             operator: operator.publicKey,
             seed: vaultSeed,
             vault: fixture.pda.vault(vaultSeed).key,
-            bump: fixture.pda.vault(vaultSeed).bump,
         });
         const transaction = new anchor.web3.Transaction().add(addVaultIns);
         try {

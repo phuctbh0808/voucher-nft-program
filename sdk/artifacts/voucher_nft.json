@@ -11,6 +11,11 @@
           "isSigner": false
         },
         {
+          "name": "authorator",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
           "name": "admin",
           "isMut": true,
           "isSigner": true
@@ -53,10 +58,6 @@
           "type": "string"
         },
         {
-          "name": "bump",
-          "type": "u8"
-        },
-        {
           "name": "operator",
           "type": "publicKey"
         }
@@ -67,6 +68,11 @@
       "accounts": [
         {
           "name": "vault",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "authorator",
           "isMut": false,
           "isSigner": false
         },
@@ -136,6 +142,18 @@
     }
   ],
   "accounts": [
+    {
+      "name": "Authorator",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
     {
       "name": "Config",
       "type": {
