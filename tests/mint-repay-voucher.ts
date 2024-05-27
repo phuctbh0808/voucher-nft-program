@@ -3,7 +3,7 @@ import * as token from '@solana/spl-token';
 import * as assert from 'assert';
 import { VoucherNftFixture, VoucherNftFixtureBuilder } from '../sdk/src/voucher-nft-fixture';
 import { MetadataParams, NetworkType, RepayVoucherInformationParams } from '../sdk/src/types';
-import { airdrop } from '../sdk/src/utils';
+import { airdrop, getCurrentBlockTime } from '../sdk/src/utils';
 import { Metadata } from '@renec-foundation/mpl-token-metadata';
 import { SendTransactionError } from '@solana/web3.js';
 import { addRepayVoucherIx, mintVoucherIx, modifyComputeUnitIx } from '../sdk/src/instructions';
@@ -16,7 +16,6 @@ describe('mint-repay-voucher', () => {
     let operator: anchor.web3.Keypair;
     let vaultSeed: string;
     let metadataParams: MetadataParams;
-    let repayVoucherInformationParams: RepayVoucherInformationParams;
 
     before(async () => {
         const fixtureBuilder = new VoucherNftFixtureBuilder().withNetwork(NetworkType.LocalNet);
@@ -27,12 +26,6 @@ describe('mint-repay-voucher', () => {
             name: 'Voucher',
             symbol: 'VC',
             uri: 'Voucher_URI',
-        };
-        repayVoucherInformationParams = {
-            discountPercentage: 100,
-            endTime: new BN(2000),
-            maximumAmount: 1000,
-            startTime: new BN(1000),
         };
         await airdrop(fixture.provider.connection, operator.publicKey, 100);
     });
@@ -64,6 +57,7 @@ describe('mint-repay-voucher', () => {
         const { key: metadata } = await fixture.pda.metadata(mint.publicKey);
         const { key: masterEdition } = await fixture.pda.masterEdition(mint.publicKey);
         const { key: authorator } = await fixture.pda.authorator();
+        const repayVoucherInformationParams = await createRepayVoucherInformationParams();
         const tx = await fixture.mintVoucherRepay(
             vaultSeed,
             operator,
@@ -146,6 +140,7 @@ describe('mint-repay-voucher', () => {
         const { key: masterEdition } = await fixture.pda.masterEdition(mint.publicKey);
         const { key: authorator } = await fixture.pda.authorator();
         const vaultTokenAccount = await token.getAssociatedTokenAddress(mint.publicKey, vault, true);
+        const repayVoucherInformationParams = await createRepayVoucherInformationParams();
         const modifyComputationUnit = modifyComputeUnitIx();
         const mintVoucherIns = await mintVoucherIx(fixture.program, {
             authorator,
@@ -193,6 +188,7 @@ describe('mint-repay-voucher', () => {
         const { key: metadata } = await fixture.pda.metadata(mint.publicKey);
         const { key: masterEdition } = await fixture.pda.masterEdition(mint.publicKey);
         const { key: authorator } = await fixture.pda.authorator();
+        const repayVoucherInformationParams = await createRepayVoucherInformationParams();
         const modifyComputationUnit = modifyComputeUnitIx();
         const addRepayVoucherIns = await addRepayVoucherIx(fixture.program, {
             authorator,
@@ -225,6 +221,7 @@ describe('mint-repay-voucher', () => {
         const { key: masterEdition } = await fixture.pda.masterEdition(mint.publicKey);
         const { key: authorator } = await fixture.pda.authorator();
         const vaultTokenAccount = await token.getAssociatedTokenAddress(mint.publicKey, vault, true);
+        const repayVoucherInformationParams = await createRepayVoucherInformationParams();
         const modifyComputationUnit = modifyComputeUnitIx();
         const mintVoucherIns = await mintVoucherIx(fixture.program, {
             authorator,
@@ -274,6 +271,7 @@ describe('mint-repay-voucher', () => {
         const { key: metadata } = await fixture.pda.metadata(mint.publicKey);
         const { key: masterEdition } = await fixture.pda.masterEdition(mint.publicKey);
         const { key: authorator } = await fixture.pda.authorator();
+        const repayVoucherInformationParams = await createRepayVoucherInformationParams();
         const modifyComputationUnit = modifyComputeUnitIx();
         const addRepayVoucherIns = await addRepayVoucherIx(fixture.program, {
             authorator,
@@ -308,6 +306,7 @@ describe('mint-repay-voucher', () => {
         const { key: metadata } = await fixture.pda.metadata(mint.publicKey);
         const { key: masterEdition } = await fixture.pda.masterEdition(mint.publicKey);
         const { key: authorator } = await fixture.pda.authorator();
+        const repayVoucherInformationParams = await createRepayVoucherInformationParams();
         const modifyComputationUnit = modifyComputeUnitIx();
         const addRepayVoucherIns = await addRepayVoucherIx(fixture.program, {
             authorator,
@@ -342,6 +341,7 @@ describe('mint-repay-voucher', () => {
         const { key: repayVoucher } = fixture.pda.repayVoucher(mint.publicKey);
         const { key: masterEdition } = await fixture.pda.masterEdition(mint.publicKey);
         const { key: authorator } = await fixture.pda.authorator();
+        const repayVoucherInformationParams = await createRepayVoucherInformationParams();
         const modifyComputationUnit = modifyComputeUnitIx();
         const addRepayVoucherIns = await addRepayVoucherIx(fixture.program, {
             authorator,
@@ -376,6 +376,7 @@ describe('mint-repay-voucher', () => {
         const { key: repayVoucher } = fixture.pda.repayVoucher(mint.publicKey);
         const { key: metadata } = await fixture.pda.metadata(mint.publicKey);
         const { key: masterEdition } = await fixture.pda.masterEdition(mint.publicKey);
+        const repayVoucherInformationParams = await createRepayVoucherInformationParams();
         const modifyComputationUnit = modifyComputeUnitIx();
         const addRepayVoucherIns = await addRepayVoucherIx(fixture.program, {
             authorator,
@@ -398,4 +399,14 @@ describe('mint-repay-voucher', () => {
             assert.ok(error.logs.some((log) => log.includes('Custom program error: 0x1774')));
         }
     });
+
+    async function createRepayVoucherInformationParams(): Promise<RepayVoucherInformationParams> {
+        const currentTime = await getCurrentBlockTime(fixture.provider.connection);
+        return {
+            discountPercentage: 100,
+            startTime: new BN(currentTime + 100),
+            endTime: new BN(currentTime + 1000),
+            maximumAmount: 1000,
+        }
+    }
 });

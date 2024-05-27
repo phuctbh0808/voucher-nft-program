@@ -12,4 +12,13 @@ pub enum VoucherNftError {
     AccountNotInitialized,
     #[msg("Authorator Not Signed")]
     AuthoratorNotSigned,
+
+    #[msg("Invalid Discount Percentage")]  // 0x1775
+    InvalidDiscountPercentage,
+    #[msg("Invalid Maximum Amount")]  // 0x1775
+    InvalidMaximumAmount,
+    #[msg("StartTime After EndTime")]
+    StartTimeAfterEndTime,
+    #[msg("StartTime Before CurrentTime")]
+    StartTimeBeforeCurrentTime,
 }

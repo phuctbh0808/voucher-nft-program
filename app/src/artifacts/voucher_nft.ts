@@ -363,6 +363,18 @@ export type VoucherNft = {
           },
           {
             "name": "AuthoratorNotSigned"
+          },
+          {
+            "name": "InvalidDiscountPercentage"
+          },
+          {
+            "name": "InvalidMaximumAmount"
+          },
+          {
+            "name": "StartTimeAfterEndTime"
+          },
+          {
+            "name": "StartTimeBeforeCurrentTime"
           }
         ]
       }
@@ -735,6 +747,18 @@ export const IDL: VoucherNft = {
           },
           {
             "name": "AuthoratorNotSigned"
+          },
+          {
+            "name": "InvalidDiscountPercentage"
+          },
+          {
+            "name": "InvalidMaximumAmount"
+          },
+          {
+            "name": "StartTimeAfterEndTime"
+          },
+          {
+            "name": "StartTimeBeforeCurrentTime"
           }
         ]
       }

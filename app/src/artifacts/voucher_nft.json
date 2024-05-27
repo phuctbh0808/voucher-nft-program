@@ -363,6 +363,18 @@
           },
           {
             "name": "AuthoratorNotSigned"
+          },
+          {
+            "name": "InvalidDiscountPercentage"
+          },
+          {
+            "name": "InvalidMaximumAmount"
+          },
+          {
+            "name": "StartTimeAfterEndTime"
+          },
+          {
+            "name": "StartTimeBeforeCurrentTime"
           }
         ]
       }

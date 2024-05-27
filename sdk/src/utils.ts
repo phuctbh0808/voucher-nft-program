@@ -8,3 +8,7 @@ export async function airdrop(connection: anchor.web3.Connection, address: ancho
 export async function delay(ms: number) {
     return new Promise((resolve) => setTimeout(resolve, ms));
 }
+
+export async function getCurrentBlockTime(connection: anchor.web3.Connection): Promise<number> {
+    return await connection.getBlockTime(await connection.getSlot('confirmed'));
+}
