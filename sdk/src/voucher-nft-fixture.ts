@@ -175,6 +175,16 @@ export class VoucherNftFixture {
             throw error;
         }
     }
+
+    async getRepayVoucherData(mint: PublicKey) {
+        const { key: repayVoucher } = this.pda.repayVoucher(mint);
+        try {
+            return await this.program.account.repayVoucher.fetch(repayVoucher);
+        } catch (error) {
+            this.verbose && console.error(error);
+            throw error;
+        }
+    }
 }
 
 export class VoucherNftFixtureBuilder {

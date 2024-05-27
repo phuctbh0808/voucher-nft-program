@@ -63,7 +63,7 @@ describe('mint-repay-voucher', () => {
         const { key: vault } = fixture.pda.vault(vaultSeed);
         const { key: metadata } = await fixture.pda.metadata(mint.publicKey);
         const { key: masterEdition } = await fixture.pda.masterEdition(mint.publicKey);
-        const { key: authority } = await fixture.pda.authorator();
+        const { key: authorator } = await fixture.pda.authorator();
         const tx = await fixture.mintVoucherRepay(
             vaultSeed,
             operator,
@@ -100,13 +100,41 @@ describe('mint-repay-voucher', () => {
         assert.equal(metadataData.data.data.creators[0].verified, true, 'Creators 0 must be verified');
         assert.equal(metadataData.data.data.creators[0].share, 0, 'Creators 0 must be 0 share');
 
-        assert.equal(metadataData.data.data.creators[1].address, authority.toBase58(), 'Creators 1 must be vault');
+        assert.equal(metadataData.data.data.creators[1].address, authorator.toBase58(), 'Creators 1 must be vault');
         assert.equal(metadataData.data.data.creators[1].verified, true, 'Creators 1 must be verified');
         assert.equal(metadataData.data.data.creators[1].share, 100, 'Creators 1 must be 100 share');
 
         const vaultTokenAccount = await token.getAssociatedTokenAddress(mint.publicKey, vault, true);
         const tokenAccount = await token.getAccount(fixture.connection, vaultTokenAccount);
         assert.equal(tokenAccount.amount, 1, 'Amount must be 1');
+
+        const repayVoucherData = await fixture.getRepayVoucherData(mint.publicKey);
+        assert.equal(
+            repayVoucherData.startTime.toString(),
+            repayVoucherInformationParams.startTime.toString(),
+            'Repay voucher startTime mismatch'
+        );
+        assert.equal(
+            repayVoucherData.endTime.toString(),
+            repayVoucherInformationParams.endTime.toString(),
+            'Repay voucher endTime mismatch'
+        );
+        assert.equal(
+            repayVoucherData.discountPercentage,
+            repayVoucherInformationParams.discountPercentage,
+            'Repay voucher discountPercentage mismatch'
+        );
+        assert.equal(
+            repayVoucherData.maximumAmount,
+            repayVoucherInformationParams.maximumAmount,
+            'Repay voucher maximumAmount mismatch'
+        );
+        assert.equal(
+            repayVoucherData.authorator.toBase58(),
+            authorator.toBase58(),
+            'Repay voucher authorator mismatch'
+        );
+        assert.equal(repayVoucherData.nftMint.toBase58(), mint.publicKey.toBase58(), 'Repay voucher mint mismatch');
     });
 
     it('FAILED InvalidAccountArgument: MetadataAccount is not incorrect', async () => {
