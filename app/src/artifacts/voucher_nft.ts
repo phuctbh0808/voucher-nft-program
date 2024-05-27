@@ -129,10 +129,6 @@ export type VoucherNft = {
       ],
       "args": [
         {
-          "name": "seed",
-          "type": "string"
-        },
-        {
           "name": "params",
           "type": {
             "defined": "MetadataParams"
@@ -515,10 +511,6 @@ export const IDL: VoucherNft = {
         }
       ],
       "args": [
-        {
-          "name": "seed",
-          "type": "string"
-        },
         {
           "name": "params",
           "type": {

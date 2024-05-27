@@ -149,7 +149,6 @@ describe('mint-repay-voucher', () => {
             mint,
             operator: operator.publicKey,
             params: metadataParams,
-            seed: vaultSeed,
             tokenMetadataProgram: Constants.TOKEN_METADATA_PROGRAM,
             vault,
             vaultTokenAccount: vaultTokenAccount,
@@ -230,7 +229,6 @@ describe('mint-repay-voucher', () => {
             mint,
             operator: operator.publicKey,
             params: metadataParams,
-            seed: vaultSeed,
             tokenMetadataProgram: Constants.TOKEN_METADATA_PROGRAM,
             vault,
             vaultTokenAccount: vaultTokenAccount,
@@ -381,7 +379,6 @@ describe('mint-repay-voucher', () => {
         const mintVoucherIns = await mintVoucherIx(fixture.program, {
             operator: operator.publicKey,
             authorator,
-            seed: vaultSeed,
             tokenMetadataProgram: Constants.TOKEN_METADATA_PROGRAM,
             vaultTokenAccount,
             metadataAccount: metadata,

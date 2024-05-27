@@ -83,7 +83,6 @@ export class VoucherNftFixture {
             const mintVoucherIns = await mintVoucherIx(this.program, {
                 operator: operator.publicKey,
                 authorator,
-                seed,
                 tokenMetadataProgram: Constants.TOKEN_METADATA_PROGRAM,
                 vaultTokenAccount,
                 metadataAccount,
@@ -118,7 +117,6 @@ export class VoucherNftFixture {
             const mintVoucherIns = await mintVoucherIx(this.program, {
                 operator: operator.publicKey,
                 authorator,
-                seed,
                 tokenMetadataProgram: Constants.TOKEN_METADATA_PROGRAM,
                 vaultTokenAccount,
                 metadataAccount,

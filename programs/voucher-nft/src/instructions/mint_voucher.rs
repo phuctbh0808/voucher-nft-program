@@ -10,10 +10,9 @@ use mpl_token_metadata::instruction::{
 use solana_program::program::invoke_signed;
 
 #[derive(Accounts)]
-#[instruction(seed: String)]
 pub struct MintVoucher<'info> {
     #[account(
-        seeds = [Vault::SEED.as_bytes(), seed.as_bytes()],
+        seeds = [Vault::SEED.as_bytes(), vault.seed.as_bytes()],
         bump,
     )]
     pub vault: Box<Account<'info, Vault>>,
@@ -73,14 +72,18 @@ pub struct MetadataParams {
     pub uri: String,
 }
 
-pub fn handler(ctx: Context<MintVoucher>, seed: String, params: MetadataParams) -> ProgramResult {
+pub fn handler(ctx: Context<MintVoucher>, params: MetadataParams) -> ProgramResult {
     let vault = &ctx.accounts.vault;
     let mint = &ctx.accounts.mint;
     let operator = &ctx.accounts.operator;
     let authorator = &ctx.accounts.authorator;
     let metadata_account = &ctx.accounts.metadata_account;
     let token_metadata_program = &ctx.accounts.token_metadata_program;
-    msg!("Minting voucher NFT {} with seed {}", mint.key(), seed);
+    msg!(
+        "Minting voucher NFT {} with vault {}",
+        mint.key(),
+        vault.key()
+    );
 
     msg!("Minting NFT to vault");
     let cpi_accounts = MintTo {
@@ -92,7 +95,7 @@ pub fn handler(ctx: Context<MintVoucher>, seed: String, params: MetadataParams) 
         CpiContext::new_with_signer(
             ctx.accounts.token_program.to_account_info(),
             cpi_accounts,
-            &[&[Vault::SEED.as_bytes(), seed.as_bytes(), &[vault.bump]]],
+            &[&[Vault::SEED.as_bytes(), vault.seed.as_bytes(), &[vault.bump]]],
         ),
         1,
     )?;
@@ -139,7 +142,7 @@ pub fn handler(ctx: Context<MintVoucher>, seed: String, params: MetadataParams) 
             None,
         ),
         metadata_account_infos.as_slice(),
-        &[&[Vault::SEED.as_bytes(), seed.as_bytes(), &[vault.bump]]],
+        &[&[Vault::SEED.as_bytes(), vault.seed.as_bytes(), &[vault.bump]]],
     )?;
 
     msg!("Signing creator with authorator");
@@ -182,7 +185,7 @@ pub fn handler(ctx: Context<MintVoucher>, seed: String, params: MetadataParams) 
             Some(0),
         ),
         master_edition_infos.as_slice(),
-        &[&[Vault::SEED.as_bytes(), seed.as_bytes(), &[vault.bump]]],
+        &[&[Vault::SEED.as_bytes(), vault.seed.as_bytes(), &[vault.bump]]],
     )?;
     msg!("Master Edition created");
 

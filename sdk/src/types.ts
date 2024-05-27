@@ -80,7 +80,6 @@ export type MintVoucherInstructionParams = {
     metadataAccount: PublicKey;
     masterEdition: PublicKey;
     tokenMetadataProgram: PublicKey;
-    seed: string;
     params: MetadataParams;
 };
 

@@ -9,8 +9,8 @@ cluster = "localnet"
 wallet = "~/.config/renec/id.json"
 
 [scripts]
-#test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/mint-voucher.ts"
-test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/mint-repay-voucher.ts"
+test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/mint-voucher.ts"
+#test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/mint-repay-voucher.ts"
 #test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/voucher-nft.ts"
 
 [[test.genesis]]

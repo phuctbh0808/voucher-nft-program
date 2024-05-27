@@ -129,10 +129,6 @@
       ],
       "args": [
         {
-          "name": "seed",
-          "type": "string"
-        },
-        {
           "name": "params",
           "type": {
             "defined": "MetadataParams"
