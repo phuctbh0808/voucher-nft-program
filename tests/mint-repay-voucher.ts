@@ -400,6 +400,58 @@ describe('mint-repay-voucher', () => {
         }
     });
 
+    it('FAILED InvalidDiscountPercentage: Discount percentage over 10000', async () => {
+        const mint = anchor.web3.Keypair.generate();
+        const repayVoucherInformationParams = await createRepayVoucherInformationParams();
+        repayVoucherInformationParams.discountPercentage = 10001;
+        try {
+            await fixture.mintVoucherRepay(vaultSeed, operator, mint, metadataParams, repayVoucherInformationParams);
+            assert.fail('Minting nft voucher should fail');
+        } catch (error) {
+            assert.ok(error instanceof SendTransactionError);
+            assert.ok(error.logs.some((log) => log.includes('Custom program error: 0x1775')));
+        }
+    });
+
+    it('FAILED InvalidMaximumAmount: Maximum amount be 0', async () => {
+        const mint = anchor.web3.Keypair.generate();
+        const repayVoucherInformationParams = await createRepayVoucherInformationParams();
+        repayVoucherInformationParams.maximumAmount = 0;
+        try {
+            await fixture.mintVoucherRepay(vaultSeed, operator, mint, metadataParams, repayVoucherInformationParams);
+            assert.fail('Minting nft voucher should fail');
+        } catch (error) {
+            assert.ok(error instanceof SendTransactionError);
+            assert.ok(error.logs.some((log) => log.includes('Custom program error: 0x1776')));
+        }
+    });
+
+    it('FAILED StartTimeAfterEndTime: StartTime greater than endTime', async () => {
+        const mint = anchor.web3.Keypair.generate();
+        const repayVoucherInformationParams = await createRepayVoucherInformationParams();
+        repayVoucherInformationParams.startTime = new BN(repayVoucherInformationParams.endTime + 1);
+        try {
+            await fixture.mintVoucherRepay(vaultSeed, operator, mint, metadataParams, repayVoucherInformationParams);
+            assert.fail('Minting nft voucher should fail');
+        } catch (error) {
+            assert.ok(error instanceof SendTransactionError);
+            assert.ok(error.logs.some((log) => log.includes('Custom program error: 0x1777')));
+        }
+    });
+
+    it('FAILED StartTimeAfterEndTime: StartTime before CurrentTime', async () => {
+        const mint = anchor.web3.Keypair.generate();
+        const repayVoucherInformationParams = await createRepayVoucherInformationParams();
+        repayVoucherInformationParams.startTime = new BN(repayVoucherInformationParams.startTime - 101);
+        try {
+            await fixture.mintVoucherRepay(vaultSeed, operator, mint, metadataParams, repayVoucherInformationParams);
+            assert.fail('Minting nft voucher should fail');
+        } catch (error) {
+            assert.ok(error instanceof SendTransactionError);
+            assert.ok(error.logs.some((log) => log.includes('Custom program error: 0x1778')));
+        }
+    });
+
     async function createRepayVoucherInformationParams(): Promise<RepayVoucherInformationParams> {
         const currentTime = await getCurrentBlockTime(fixture.provider.connection);
         return {
@@ -407,6 +459,6 @@ describe('mint-repay-voucher', () => {
             startTime: new BN(currentTime + 100),
             endTime: new BN(currentTime + 1000),
             maximumAmount: 1000,
-        }
+        };
     }
 });

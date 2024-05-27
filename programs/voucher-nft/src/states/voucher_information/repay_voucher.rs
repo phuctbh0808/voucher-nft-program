@@ -1,5 +1,5 @@
-use anchor_lang::prelude::*;
 use crate::errors::VoucherNftError::*;
+use anchor_lang::prelude::*;
 
 #[account]
 pub struct RepayVoucher {
@@ -17,7 +17,12 @@ impl RepayVoucher {
     pub const SPACE: usize = 8 + 2 + 4 + 8 * 2 + 32 * 2 + 16 * 6;
     pub const SEED: &'static str = "REPAY_VOUCHER";
 
-    fn assert_data_is_valid(discount_percentage: u16, maximum_amount: u32, start_time: i64, end_time: i64) -> ProgramResult {
+    fn assert_data_is_valid(
+        discount_percentage: u16,
+        maximum_amount: u32,
+        start_time: i64,
+        end_time: i64,
+    ) -> ProgramResult {
         if discount_percentage > 10000 {
             return Err(InvalidDiscountPercentage.into());
         }
@@ -31,7 +36,7 @@ impl RepayVoucher {
         }
 
         let current_time = Clock::get()?.unix_timestamp as i64;
-        if start_time < current_time  {
+        if start_time < current_time {
             return Err(StartTimeBeforeCurrentTime.into());
         }
         Ok(())
