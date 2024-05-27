@@ -365,6 +365,55 @@ describe('mint-repay-voucher', () => {
         }
     });
 
+    it('FAILED VaultNotSigned: Vault not found', async () => {
+        const vaultSeed2 = 'Vault2';
+        await fixture.addVault(vaultSeed2, operator.publicKey);
+
+        const mint = anchor.web3.Keypair.generate();
+        const { key: vault } = fixture.pda.vault(vaultSeed);
+        const { key: vault2 } = fixture.pda.vault(vaultSeed2);
+        const { key: metadata } = await fixture.pda.metadata(mint.publicKey);
+        const { key: repayVoucher } = fixture.pda.repayVoucher(mint.publicKey);
+        const { key: masterEdition } = await fixture.pda.masterEdition(mint.publicKey);
+        const { key: authorator } = await fixture.pda.authorator();
+        const vaultTokenAccount = await token.getAssociatedTokenAddress(mint.publicKey, vault, true);
+        const modifyUnitIns = modifyComputeUnitIx();
+        const mintVoucherIns = await mintVoucherIx(fixture.program, {
+            operator: operator.publicKey,
+            authorator,
+            seed: vaultSeed,
+            tokenMetadataProgram: Constants.TOKEN_METADATA_PROGRAM,
+            vaultTokenAccount,
+            metadataAccount: metadata,
+            masterEdition,
+            vault,
+            mint,
+            params: metadataParams,
+        });
+        const repayVoucherInformationParams = await createRepayVoucherInformationParams();
+        const addRepayVoucherIns = await addRepayVoucherIx(fixture.program, {
+            authorator,
+            masterEdition,
+            metadataAccount: metadata,
+            mint,
+            operator: operator.publicKey,
+            tokenMetadataProgram: Constants.TOKEN_METADATA_PROGRAM,
+            vault: vault2,
+            repayVoucher,
+            params: repayVoucherInformationParams,
+        });
+
+        try {
+            const transaction = new anchor.web3.Transaction().add(modifyUnitIns, mintVoucherIns, addRepayVoucherIns);
+            await fixture.provider.sendAndConfirm(transaction, [operator, mint]);
+            assert.fail('Perform minting repay voucher should fail');
+        } catch (error) {
+            assert.ok(error instanceof SendTransactionError);
+            assert.ok(error.logs.some((log) => log.includes('Vault not found')));
+            assert.ok(error.logs.some((log) => log.includes('Custom program error: 0x1775')));
+        }
+    });
+
     it('FAILED AuthoratorNotSigned: Authorator not verified', async () => {
         const { key: authorator } = await fixture.pda.authorator();
         const mint = anchor.web3.Keypair.generate();
@@ -409,7 +458,7 @@ describe('mint-repay-voucher', () => {
             assert.fail('Minting nft voucher should fail');
         } catch (error) {
             assert.ok(error instanceof SendTransactionError);
-            assert.ok(error.logs.some((log) => log.includes('Custom program error: 0x1775')));
+            assert.ok(error.logs.some((log) => log.includes('Custom program error: 0x1776')));
         }
     });
 
@@ -422,7 +471,7 @@ describe('mint-repay-voucher', () => {
             assert.fail('Minting nft voucher should fail');
         } catch (error) {
             assert.ok(error instanceof SendTransactionError);
-            assert.ok(error.logs.some((log) => log.includes('Custom program error: 0x1776')));
+            assert.ok(error.logs.some((log) => log.includes('Custom program error: 0x1777')));
         }
     });
 
@@ -435,7 +484,7 @@ describe('mint-repay-voucher', () => {
             assert.fail('Minting nft voucher should fail');
         } catch (error) {
             assert.ok(error instanceof SendTransactionError);
-            assert.ok(error.logs.some((log) => log.includes('Custom program error: 0x1777')));
+            assert.ok(error.logs.some((log) => log.includes('Custom program error: 0x1778')));
         }
     });
 
@@ -448,7 +497,7 @@ describe('mint-repay-voucher', () => {
             assert.fail('Minting nft voucher should fail');
         } catch (error) {
             assert.ok(error instanceof SendTransactionError);
-            assert.ok(error.logs.some((log) => log.includes('Custom program error: 0x1778')));
+            assert.ok(error.logs.some((log) => log.includes('Custom program error: 0x1779')));
         }
     });
 

@@ -356,6 +356,9 @@ export type VoucherNft = {
                         name: 'AuthoratorNotSigned';
                     },
                     {
+                        name: 'VaultNotSigned';
+                    },
+                    {
                         name: 'InvalidDiscountPercentage';
                     },
                     {
@@ -729,6 +732,9 @@ export const IDL: VoucherNft = {
                     },
                     {
                         name: 'AuthoratorNotSigned',
+                    },
+                    {
+                        name: 'VaultNotSigned',
                     },
                     {
                         name: 'InvalidDiscountPercentage',

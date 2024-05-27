@@ -365,6 +365,9 @@
             "name": "AuthoratorNotSigned"
           },
           {
+            "name": "VaultNotSigned"
+          },
+          {
             "name": "InvalidDiscountPercentage"
           },
           {

@@ -57,6 +57,7 @@ pub struct AddRepayVoucherParams {
 
 pub fn handler(ctx: Context<AddRepayVoucher>, params: AddRepayVoucherParams) -> ProgramResult {
     let mint = &ctx.accounts.mint;
+    let vault = &ctx.accounts.vault;
     let metadata = &ctx.accounts.metadata_account;
     let master_edition = &ctx.accounts.master_edition;
     let repay_voucher = &mut ctx.accounts.repay_voucher;
@@ -110,8 +111,8 @@ pub fn handler(ctx: Context<AddRepayVoucher>, params: AddRepayVoucherParams) -> 
             return Err(AuthoratorNotSigned.into());
         }
         Some(creators) => {
-            let match_creator = creators.iter().find(|c| c.address == authorator);
-            match match_creator {
+            let authorator_creator = creators.iter().find(|c| c.address == authorator);
+            match authorator_creator {
                 None => {
                     msg!("Authorator not found");
                     return Err(AuthoratorNotSigned.into());
@@ -124,8 +125,25 @@ pub fn handler(ctx: Context<AddRepayVoucher>, params: AddRepayVoucherParams) -> 
                     msg!("Verify authorator success");
                 }
             }
+
+            let vault_creator = creators.iter().find(|c| c.address == vault.key());
+            match vault_creator {
+                None => {
+                    msg!("Vault not found");
+                    return Err(VaultNotSigned.into());
+                }
+                Some(creator) => {
+                    if creator.verified == false {
+                        msg!("Vault not verified");
+                        return Err(VaultNotSigned.into());
+                    }
+                    msg!("Verify vault success");
+                }
+            }
         }
     }
+
+    msg!("Verify creators success");
 
     repay_voucher.initialize(
         params.discount_percentage,

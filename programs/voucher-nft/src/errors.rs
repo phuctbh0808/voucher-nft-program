@@ -13,9 +13,11 @@ pub enum VoucherNftError {
     #[msg("Authorator Not Signed")]
     AuthoratorNotSigned,
 
-    #[msg("Invalid Discount Percentage")] // 0x1775
+    #[msg("Vault Not Signed")] // 0x1775
+    VaultNotSigned,
+    #[msg("Invalid Discount Percentage")]
     InvalidDiscountPercentage,
-    #[msg("Invalid Maximum Amount")] // 0x1775
+    #[msg("Invalid Maximum Amount")]
     InvalidMaximumAmount,
     #[msg("StartTime After EndTime")]
     StartTimeAfterEndTime,
