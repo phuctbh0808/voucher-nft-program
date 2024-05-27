@@ -3,6 +3,7 @@ use crate::errors::VoucherNftError::*;
 use crate::states::*;
 use anchor_lang::prelude::*;
 use anchor_spl::token::Mint;
+use mpl_token_metadata::state::Metadata;
 
 #[derive(Accounts)]
 pub struct AddRepayVoucher<'info> {
@@ -79,5 +80,33 @@ pub fn handler(ctx: Context<AddRepayVoucher>) -> ProgramResult {
         return Err(AccountNotInitialized.into());
     }
     msg!("Check master edition success");
+
+    let (authorator, _) =
+        Pubkey::find_program_address(&[Authorator::SEED.as_bytes()], ctx.program_id);
+
+    let metadata_account_data = &mut Metadata::from_account_info(metadata)?;
+    let metadata_creators = metadata_account_data.data.creators.clone();
+    match metadata_creators {
+        None => {
+            msg!("Creators is empty");
+            return Err(AuthoratorNotSigned.into());
+        }
+        Some(creators) => {
+            let match_creator = creators.iter().find(|c| c.address == authorator);
+            match match_creator {
+                None => {
+                    msg!("Authorator not found");
+                    return Err(AuthoratorNotSigned.into());
+                }
+                Some(creator) => {
+                    if creator.verified == false {
+                        msg!("Authorator not verified");
+                        return Err(AuthoratorNotSigned.into());
+                    }
+                    msg!("Verify authorator success");
+                }
+            }
+        }
+    }
     Ok(())
 }

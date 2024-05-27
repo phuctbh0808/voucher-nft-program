@@ -316,6 +316,9 @@ export type VoucherNft = {
                     {
                         name: 'AccountNotInitialized';
                     },
+                    {
+                        name: 'AuthoratorNotSigned';
+                    },
                 ];
             };
         },
@@ -639,6 +642,9 @@ export const IDL: VoucherNft = {
                     },
                     {
                         name: 'AccountNotInitialized',
+                    },
+                    {
+                        name: 'AuthoratorNotSigned',
                     },
                 ],
             },

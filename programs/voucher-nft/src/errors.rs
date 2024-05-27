@@ -10,4 +10,6 @@ pub enum VoucherNftError {
     InvalidAccountArgument,
     #[msg("Account Not Initialized")]
     AccountNotInitialized,
+    #[msg("Authorator Not Signed")]
+    AuthoratorNotSigned,
 }

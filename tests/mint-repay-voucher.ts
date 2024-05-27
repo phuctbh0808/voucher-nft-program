@@ -8,7 +8,7 @@ import { Metadata } from '@renec-foundation/mpl-token-metadata';
 import { SendTransactionError } from '@solana/web3.js';
 import { addRepayVoucherIx, mintVoucherIx, modifyComputeUnitIx } from '../sdk/src/instructions';
 import { Constants } from '../sdk/src/constants';
-import { createMetadataV2, createTokenMint } from './token-utils';
+import { createMasterEdition, createMetadataV2, createNftMint } from './token-utils';
 
 describe('mint-repay-voucher', () => {
     let fixture: VoucherNftFixture;
@@ -142,7 +142,7 @@ describe('mint-repay-voucher', () => {
 
     it('FAILED AccountNotInitialized: MetadataAccount is not initialized', async () => {
         const mint = anchor.web3.Keypair.generate();
-        await createTokenMint(fixture.provider, mint, operator);
+        await createNftMint(fixture.provider, mint, operator);
         const { key: vault } = fixture.pda.vault(vaultSeed);
         const { key: metadata } = await fixture.pda.metadata(mint.publicKey);
         const { key: masterEdition } = await fixture.pda.masterEdition(mint.publicKey);
@@ -215,7 +215,7 @@ describe('mint-repay-voucher', () => {
 
     it('FAILED AccountNotInitialized: MasterEdition is not initialized', async () => {
         const mint = anchor.web3.Keypair.generate();
-        await createTokenMint(fixture.provider, mint, operator);
+        await createNftMint(fixture.provider, mint, operator);
         await createMetadataV2(fixture.provider, mint, operator);
 
         const { key: vault } = fixture.pda.vault(vaultSeed);
@@ -240,6 +240,99 @@ describe('mint-repay-voucher', () => {
             assert.ok(error instanceof SendTransactionError);
             assert.ok(error.logs.every((log) => !log.includes('Check master edition success')));
             assert.ok(error.logs.some((log) => log.includes('Custom program error: 0x1773')));
+        }
+    });
+
+    it('FAILED AuthoratorNotSigned: Creators is empty', async () => {
+        const mint = anchor.web3.Keypair.generate();
+        await createNftMint(fixture.provider, mint, operator);
+        await createMetadataV2(fixture.provider, mint, operator);
+        await createMasterEdition(fixture.provider, mint, operator);
+
+        const { key: vault } = fixture.pda.vault(vaultSeed);
+        const { key: metadata } = await fixture.pda.metadata(mint.publicKey);
+        const { key: masterEdition } = await fixture.pda.masterEdition(mint.publicKey);
+        const { key: authorator } = await fixture.pda.authorator();
+        const modifyComputationUnit = modifyComputeUnitIx();
+        const addRepayVoucherIns = await addRepayVoucherIx(fixture.program, {
+            authorator,
+            masterEdition,
+            metadataAccount: metadata,
+            mint,
+            operator: operator.publicKey,
+            tokenMetadataProgram: Constants.TOKEN_METADATA_PROGRAM,
+            vault,
+        });
+        const transaction = new anchor.web3.Transaction().add(modifyComputationUnit, addRepayVoucherIns);
+        try {
+            await fixture.provider.sendAndConfirm(transaction, [operator]);
+            assert.fail('Perform minting repay voucher should fail');
+        } catch (error) {
+            assert.ok(error instanceof SendTransactionError);
+            assert.ok(error.logs.some((log) => log.includes('Creators is empty')));
+            assert.ok(error.logs.some((log) => log.includes('Custom program error: 0x1774')));
+        }
+    });
+
+    it('FAILED AuthoratorNotSigned: Authorator not found', async () => {
+        const mint = anchor.web3.Keypair.generate();
+        await createNftMint(fixture.provider, mint, operator);
+        await createMetadataV2(fixture.provider, mint, operator, operator.publicKey);
+        await createMasterEdition(fixture.provider, mint, operator);
+
+        const { key: vault } = fixture.pda.vault(vaultSeed);
+        const { key: metadata } = await fixture.pda.metadata(mint.publicKey);
+        const { key: masterEdition } = await fixture.pda.masterEdition(mint.publicKey);
+        const { key: authorator } = await fixture.pda.authorator();
+        const modifyComputationUnit = modifyComputeUnitIx();
+        const addRepayVoucherIns = await addRepayVoucherIx(fixture.program, {
+            authorator,
+            masterEdition,
+            metadataAccount: metadata,
+            mint,
+            operator: operator.publicKey,
+            tokenMetadataProgram: Constants.TOKEN_METADATA_PROGRAM,
+            vault,
+        });
+        const transaction = new anchor.web3.Transaction().add(modifyComputationUnit, addRepayVoucherIns);
+        try {
+            await fixture.provider.sendAndConfirm(transaction, [operator]);
+            assert.fail('Perform minting repay voucher should fail');
+        } catch (error) {
+            assert.ok(error instanceof SendTransactionError);
+            assert.ok(error.logs.some((log) => log.includes('Authorator not found')));
+            assert.ok(error.logs.some((log) => log.includes('Custom program error: 0x1774')));
+        }
+    });
+
+    it('FAILED AuthoratorNotSigned: Authorator not verified', async () => {
+        const { key: authorator } = await fixture.pda.authorator();
+        const mint = anchor.web3.Keypair.generate();
+        await createNftMint(fixture.provider, mint, operator);
+        await createMetadataV2(fixture.provider, mint, operator, authorator);
+        await createMasterEdition(fixture.provider, mint, operator);
+
+        const { key: vault } = fixture.pda.vault(vaultSeed);
+        const { key: metadata } = await fixture.pda.metadata(mint.publicKey);
+        const { key: masterEdition } = await fixture.pda.masterEdition(mint.publicKey);
+        const modifyComputationUnit = modifyComputeUnitIx();
+        const addRepayVoucherIns = await addRepayVoucherIx(fixture.program, {
+            authorator,
+            masterEdition,
+            metadataAccount: metadata,
+            mint,
+            operator: operator.publicKey,
+            tokenMetadataProgram: Constants.TOKEN_METADATA_PROGRAM,
+            vault,
+        });
+        const transaction = new anchor.web3.Transaction().add(modifyComputationUnit, addRepayVoucherIns);
+        try {
+            await fixture.provider.sendAndConfirm(transaction, [operator]);
+            assert.fail('Perform minting repay voucher should fail');
+        } catch (error) {
+            assert.ok(error instanceof SendTransactionError);
+            assert.ok(error.logs.some((log) => log.includes('Authorator not verified')));
+            assert.ok(error.logs.some((log) => log.includes('Custom program error: 0x1774')));
         }
     });
 });
