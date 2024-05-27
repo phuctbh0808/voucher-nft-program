@@ -4,7 +4,7 @@ import { Program } from '@project-serum/anchor';
 import { configurations, MetadataParams, NetworkType, VoucherNftIDL, VoucherNftType } from './types';
 import { getKeypairFromFile } from '@solana-developers/helpers';
 import { PDA } from './pda';
-import { addVaultIx, mintVoucherIx, modifyComputeUnitIx } from './instructions';
+import { addRepayVoucherIx, addVaultIx, mintVoucherIx, modifyComputeUnitIx } from './instructions';
 import { Keypair, PublicKey } from '@solana/web3.js';
 import { Constants } from './constants';
 
@@ -86,6 +86,43 @@ export class VoucherNftFixture {
                 params,
             });
             const transaction = new anchor.web3.Transaction().add(modifyUnitIns, mintVoucherIns);
+            return await this.provider.sendAndConfirm(transaction, [operator, mint]);
+        } catch (error) {
+            this.verbose && console.error(error);
+            throw error;
+        }
+    }
+
+    async mintVoucherRepay(seed: string, operator: Keypair, mint: Keypair, params: MetadataParams): Promise<string> {
+        try {
+            const { key: metadataAccount } = await this.pda.metadata(mint.publicKey);
+            const { key: masterEdition } = await this.pda.masterEdition(mint.publicKey);
+            const { key: authorator } = this.pda.authorator();
+            const { key: vault } = this.pda.vault(seed);
+            const vaultTokenAccount = await token.getAssociatedTokenAddress(mint.publicKey, vault, true);
+            const modifyUnitIns = modifyComputeUnitIx();
+            const mintVoucherIns = await mintVoucherIx(this.program, {
+                operator: operator.publicKey,
+                authorator,
+                seed,
+                tokenMetadataProgram: Constants.TOKEN_METADATA_PROGRAM,
+                vaultTokenAccount,
+                metadataAccount,
+                masterEdition,
+                vault,
+                mint,
+                params,
+            });
+            const addRepayVoucherIns = await addRepayVoucherIx(this.program, {
+                authorator,
+                masterEdition,
+                metadataAccount,
+                mint,
+                operator: operator.publicKey,
+                tokenMetadataProgram: Constants.TOKEN_METADATA_PROGRAM,
+                vault,
+            });
+            const transaction = new anchor.web3.Transaction().add(modifyUnitIns, mintVoucherIns, addRepayVoucherIns);
             return await this.provider.sendAndConfirm(transaction, [operator, mint]);
         } catch (error) {
             this.verbose && console.error(error);

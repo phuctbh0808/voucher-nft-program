@@ -83,3 +83,13 @@ export type MintVoucherInstructionParams = {
     seed: string;
     params: MetadataParams;
 };
+
+export type AddVoucherRepayInstructionParams = {
+    vault: PublicKey;
+    operator: PublicKey;
+    authorator: PublicKey;
+    mint: Keypair;
+    metadataAccount: PublicKey;
+    masterEdition: PublicKey;
+    tokenMetadataProgram: PublicKey;
+};

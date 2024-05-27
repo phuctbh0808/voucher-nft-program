@@ -1,6 +1,11 @@
 import { Program } from '@project-serum/anchor';
 import { Keypair } from '@solana/web3.js';
-import { AddVaultInstructionParams, MintVoucherInstructionParams, VoucherNftType } from './types';
+import {
+    AddVoucherRepayInstructionParams,
+    AddVaultInstructionParams,
+    MintVoucherInstructionParams,
+    VoucherNftType,
+} from './types';
 import { ComputeBudgetProgram } from '@solana/web3.js';
 
 export function addVaultIx(program: Program<VoucherNftType>, params: AddVaultInstructionParams) {
@@ -25,6 +30,20 @@ export async function mintVoucherIx(program: Program<VoucherNftType>, params: Mi
             metadataAccount: params.metadataAccount,
             masterEdition: params.masterEdition,
             mint: params.mint.publicKey,
+            tokenMetadataProgram: params.tokenMetadataProgram,
+        })
+        .instruction();
+}
+
+export async function addRepayVoucherIx(program: Program<VoucherNftType>, params: AddVoucherRepayInstructionParams) {
+    return program.methods
+        .addVoucherRepayInformation()
+        .accounts({
+            vault: params.vault,
+            operator: params.operator,
+            mint: params.mint.publicKey,
+            metadataAccount: params.metadataAccount,
+            masterEdition: params.masterEdition,
             tokenMetadataProgram: params.tokenMetadataProgram,
         })
         .instruction();

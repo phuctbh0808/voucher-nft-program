@@ -42,7 +42,7 @@ pub fn handler(ctx: Context<AddRepayVoucher>) -> ProgramResult {
     let metadata = &ctx.accounts.metadata_account;
     let master_edition = &ctx.accounts.master_edition;
 
-    msg!("Checking metadata account");
+    msg!("Perform add repay voucher");
     let (calculated_metadata, _) = Pubkey::find_program_address(
         &[
             METADATA_PREFIX.as_bytes(),
@@ -59,8 +59,8 @@ pub fn handler(ctx: Context<AddRepayVoucher>) -> ProgramResult {
     if metadata.data_is_empty() {
         return Err(AccountNotInitialized.into());
     }
+    msg!("Check metadata success");
 
-    msg!("Checking master edition account");
     let (calculated_master_edition, _) = Pubkey::find_program_address(
         &[
             METADATA_PREFIX.as_bytes(),
@@ -78,5 +78,6 @@ pub fn handler(ctx: Context<AddRepayVoucher>) -> ProgramResult {
     if master_edition.data_is_empty() {
         return Err(AccountNotInitialized.into());
     }
+    msg!("Check master edition success");
     Ok(())
 }

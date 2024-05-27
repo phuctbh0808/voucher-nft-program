@@ -2,7 +2,7 @@ use anchor_lang::prelude::*;
 
 #[error]
 pub enum VoucherNftError {
-    #[msg("Only Admin")]
+    #[msg("Only Admin")] // 0x1770
     OnlyAdmin,
     #[msg("Only Operator")]
     OnlyOperator,
