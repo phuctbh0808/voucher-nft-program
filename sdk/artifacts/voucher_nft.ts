@@ -189,6 +189,62 @@ export type VoucherNft = {
                 },
             ];
         },
+        {
+            name: 'operatorAirdrop';
+            accounts: [
+                {
+                    name: 'vault';
+                    isMut: false;
+                    isSigner: false;
+                },
+                {
+                    name: 'operator';
+                    isMut: true;
+                    isSigner: true;
+                },
+                {
+                    name: 'user';
+                    isMut: false;
+                    isSigner: false;
+                },
+                {
+                    name: 'mint';
+                    isMut: false;
+                    isSigner: false;
+                },
+                {
+                    name: 'vaultTokenAccount';
+                    isMut: true;
+                    isSigner: false;
+                },
+                {
+                    name: 'userTokenAccount';
+                    isMut: true;
+                    isSigner: false;
+                },
+                {
+                    name: 'associatedTokenProgram';
+                    isMut: false;
+                    isSigner: false;
+                },
+                {
+                    name: 'tokenProgram';
+                    isMut: false;
+                    isSigner: false;
+                },
+                {
+                    name: 'systemProgram';
+                    isMut: false;
+                    isSigner: false;
+                },
+                {
+                    name: 'rent';
+                    isMut: false;
+                    isSigner: false;
+                },
+            ];
+            args: [];
+        },
     ];
     accounts: [
         {
@@ -365,6 +421,9 @@ export type VoucherNft = {
                     },
                     {
                         name: 'StartTimeBeforeCurrentTime';
+                    },
+                    {
+                        name: 'InvalidNftMint';
                     },
                 ];
             };
@@ -563,6 +622,62 @@ export const IDL: VoucherNft = {
                 },
             ],
         },
+        {
+            name: 'operatorAirdrop',
+            accounts: [
+                {
+                    name: 'vault',
+                    isMut: false,
+                    isSigner: false,
+                },
+                {
+                    name: 'operator',
+                    isMut: true,
+                    isSigner: true,
+                },
+                {
+                    name: 'user',
+                    isMut: false,
+                    isSigner: false,
+                },
+                {
+                    name: 'mint',
+                    isMut: false,
+                    isSigner: false,
+                },
+                {
+                    name: 'vaultTokenAccount',
+                    isMut: true,
+                    isSigner: false,
+                },
+                {
+                    name: 'userTokenAccount',
+                    isMut: true,
+                    isSigner: false,
+                },
+                {
+                    name: 'associatedTokenProgram',
+                    isMut: false,
+                    isSigner: false,
+                },
+                {
+                    name: 'tokenProgram',
+                    isMut: false,
+                    isSigner: false,
+                },
+                {
+                    name: 'systemProgram',
+                    isMut: false,
+                    isSigner: false,
+                },
+                {
+                    name: 'rent',
+                    isMut: false,
+                    isSigner: false,
+                },
+            ],
+            args: [],
+        },
     ],
     accounts: [
         {
@@ -739,6 +854,9 @@ export const IDL: VoucherNft = {
                     },
                     {
                         name: 'StartTimeBeforeCurrentTime',
+                    },
+                    {
+                        name: 'InvalidNftMint',
                     },
                 ],
             },

@@ -32,4 +32,8 @@ pub mod voucher_nft {
     ) -> ProgramResult {
         add_repay_voucher::handler(ctx, params)
     }
+
+    pub fn operator_airdrop(ctx: Context<OperatorAirdrop>) -> ProgramResult {
+        operator_airdrop::handler(ctx)
+    }
 }

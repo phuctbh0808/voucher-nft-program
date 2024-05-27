@@ -23,4 +23,7 @@ pub enum VoucherNftError {
     StartTimeAfterEndTime,
     #[msg("StartTime Before CurrentTime")]
     StartTimeBeforeCurrentTime,
+
+    #[msg("Invalid Nft Mint")] // 0x177a
+    InvalidNftMint,
 }
