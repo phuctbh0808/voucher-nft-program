@@ -30,7 +30,10 @@ pub mod voucher_nft {
         mint_voucher::handler(ctx, seed, params)
     }
 
-    pub fn add_voucher_repay_information(ctx: Context<AddRepayVoucher>) -> ProgramResult {
-        add_repay_voucher::handler(ctx)
+    pub fn add_voucher_repay_information(
+        ctx: Context<AddRepayVoucher>,
+        params: AddRepayVoucherParams,
+    ) -> ProgramResult {
+        add_repay_voucher::handler(ctx, params)
     }
 }

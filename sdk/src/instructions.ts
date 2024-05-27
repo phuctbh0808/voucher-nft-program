@@ -37,13 +37,19 @@ export async function mintVoucherIx(program: Program<VoucherNftType>, params: Mi
 
 export async function addRepayVoucherIx(program: Program<VoucherNftType>, params: AddVoucherRepayInstructionParams) {
     return program.methods
-        .addVoucherRepayInformation()
+        .addVoucherRepayInformation({
+            startTime: params.params.startTime,
+            endTime: params.params.endTime,
+            discountPercentage: params.params.discountPercentage,
+            maximumAmount: params.params.maximumAmount,
+        })
         .accounts({
             vault: params.vault,
             operator: params.operator,
             mint: params.mint.publicKey,
             metadataAccount: params.metadataAccount,
             masterEdition: params.masterEdition,
+            repayVoucher: params.repayVoucher,
             tokenMetadataProgram: params.tokenMetadataProgram,
         })
         .instruction();

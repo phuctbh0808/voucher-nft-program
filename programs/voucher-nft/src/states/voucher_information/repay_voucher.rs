@@ -2,7 +2,8 @@ use anchor_lang::prelude::*;
 
 #[account]
 pub struct RepayVoucher {
-    pub discount_percentage: u8,
+    // Base 10000
+    pub discount_percentage: u16,
     pub maximum_amount: u32,
     pub start_time: i64,
     pub end_time: i64,
@@ -12,12 +13,12 @@ pub struct RepayVoucher {
 }
 
 impl RepayVoucher {
-    pub const SPACE: usize = 8 + 1 + 4 + 8 * 2 + 16 * 6;
+    pub const SPACE: usize = 8 + 2 + 4 + 8 * 2 + 32 * 2 + 16 * 6;
     pub const SEED: &'static str = "REPAY_VOUCHER";
 
     pub fn initialize(
         &mut self,
-        discount_percentage: u8,
+        discount_percentage: u16,
         maximum_amount: u32,
         start_time: i64,
         end_time: i64,

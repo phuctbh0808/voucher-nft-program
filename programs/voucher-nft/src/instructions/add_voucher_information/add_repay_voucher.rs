@@ -30,6 +30,15 @@ pub struct AddRepayVoucher<'info> {
     #[account()]
     pub master_edition: AccountInfo<'info>,
 
+    #[account(
+        init,
+        seeds = [RepayVoucher::SEED.as_bytes(), mint.key().as_ref()],
+        bump,
+        space = RepayVoucher::SPACE,
+        payer = operator,
+    )]
+    pub repay_voucher: Box<Account<'info, RepayVoucher>>,
+
     /// CHECK: THe RENEC token metadata program
     #[account(
         address = TOKEN_METADATA_PROGRAM_ID,
@@ -38,10 +47,19 @@ pub struct AddRepayVoucher<'info> {
     pub system_program: Program<'info, System>,
 }
 
-pub fn handler(ctx: Context<AddRepayVoucher>) -> ProgramResult {
+#[derive(AnchorSerialize, AnchorDeserialize, PartialEq, Clone)]
+pub struct AddRepayVoucherParams {
+    pub discount_percentage: u16,
+    pub maximum_amount: u32,
+    pub start_time: i64,
+    pub end_time: i64,
+}
+
+pub fn handler(ctx: Context<AddRepayVoucher>, params: AddRepayVoucherParams) -> ProgramResult {
     let mint = &ctx.accounts.mint;
     let metadata = &ctx.accounts.metadata_account;
     let master_edition = &ctx.accounts.master_edition;
+    let repay_voucher = &mut ctx.accounts.repay_voucher;
 
     msg!("Perform add repay voucher");
     let (calculated_metadata, _) = Pubkey::find_program_address(
@@ -108,5 +126,16 @@ pub fn handler(ctx: Context<AddRepayVoucher>) -> ProgramResult {
             }
         }
     }
+
+    repay_voucher.initialize(
+        params.discount_percentage,
+        params.maximum_amount,
+        params.start_time,
+        params.end_time,
+        mint.key(),
+        authorator,
+    )?;
+
+    msg!("Initialize repay voucher success");
     Ok(())
 }

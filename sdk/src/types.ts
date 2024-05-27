@@ -1,5 +1,5 @@
 import * as anchor from '@project-serum/anchor';
-import { BorshAccountsCoder, Idl } from '@project-serum/anchor';
+import { BN, BorshAccountsCoder, Idl } from '@project-serum/anchor';
 
 import { VoucherNft } from '../artifacts/voucher_nft';
 import IDL from '../artifacts/voucher_nft.json';
@@ -84,6 +84,13 @@ export type MintVoucherInstructionParams = {
     params: MetadataParams;
 };
 
+export type RepayVoucherInformationParams = {
+    discountPercentage: number;
+    maximumAmount: number;
+    startTime: BN;
+    endTime: BN;
+};
+
 export type AddVoucherRepayInstructionParams = {
     vault: PublicKey;
     operator: PublicKey;
@@ -91,5 +98,7 @@ export type AddVoucherRepayInstructionParams = {
     mint: Keypair;
     metadataAccount: PublicKey;
     masterEdition: PublicKey;
+    repayVoucher: PublicKey;
     tokenMetadataProgram: PublicKey;
+    params: RepayVoucherInformationParams;
 };

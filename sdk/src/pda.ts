@@ -1,6 +1,7 @@
 import * as anchor from '@project-serum/anchor';
 import { MasterEdition, Metadata } from '@renec-foundation/mpl-token-metadata';
 import { Constants } from './constants';
+import { PublicKey } from '@solana/web3.js';
 export interface PDAInfo {
     key: anchor.web3.PublicKey;
     bump: number | null;
@@ -39,6 +40,17 @@ export class PDA {
     vault = (seed: string): PDAInfo => {
         const [pda, bump] = anchor.web3.PublicKey.findProgramAddressSync(
             [Buffer.from(Constants.VAULT_SEED), Buffer.from(seed)],
+            this.programId
+        );
+        return {
+            key: pda,
+            bump,
+        };
+    };
+
+    repayVoucher = (mint: PublicKey): PDAInfo => {
+        const [pda, bump] = anchor.web3.PublicKey.findProgramAddressSync(
+            [Buffer.from(Constants.REPAY_VOUCHER_SEED), mint.toBuffer()],
             this.programId
         );
         return {

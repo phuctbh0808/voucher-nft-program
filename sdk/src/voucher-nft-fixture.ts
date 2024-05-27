@@ -1,7 +1,14 @@
 import * as anchor from '@project-serum/anchor';
 import * as token from '@solana/spl-token';
 import { Program } from '@project-serum/anchor';
-import { configurations, MetadataParams, NetworkType, VoucherNftIDL, VoucherNftType } from './types';
+import {
+    configurations,
+    MetadataParams,
+    NetworkType,
+    RepayVoucherInformationParams,
+    VoucherNftIDL,
+    VoucherNftType,
+} from './types';
 import { getKeypairFromFile } from '@solana-developers/helpers';
 import { PDA } from './pda';
 import { addRepayVoucherIx, addVaultIx, mintVoucherIx, modifyComputeUnitIx } from './instructions';
@@ -93,12 +100,19 @@ export class VoucherNftFixture {
         }
     }
 
-    async mintVoucherRepay(seed: string, operator: Keypair, mint: Keypair, params: MetadataParams): Promise<string> {
+    async mintVoucherRepay(
+        seed: string,
+        operator: Keypair,
+        mint: Keypair,
+        metadataParams: MetadataParams,
+        repayVoucherInformationParams: RepayVoucherInformationParams
+    ): Promise<string> {
         try {
             const { key: metadataAccount } = await this.pda.metadata(mint.publicKey);
             const { key: masterEdition } = await this.pda.masterEdition(mint.publicKey);
             const { key: authorator } = this.pda.authorator();
             const { key: vault } = this.pda.vault(seed);
+            const { key: repayVoucher } = this.pda.repayVoucher(mint.publicKey);
             const vaultTokenAccount = await token.getAssociatedTokenAddress(mint.publicKey, vault, true);
             const modifyUnitIns = modifyComputeUnitIx();
             const mintVoucherIns = await mintVoucherIx(this.program, {
@@ -111,7 +125,7 @@ export class VoucherNftFixture {
                 masterEdition,
                 vault,
                 mint,
-                params,
+                params: metadataParams,
             });
             const addRepayVoucherIns = await addRepayVoucherIx(this.program, {
                 authorator,
@@ -121,6 +135,8 @@ export class VoucherNftFixture {
                 operator: operator.publicKey,
                 tokenMetadataProgram: Constants.TOKEN_METADATA_PROGRAM,
                 vault,
+                repayVoucher,
+                params: repayVoucherInformationParams,
             });
             const transaction = new anchor.web3.Transaction().add(modifyUnitIns, mintVoucherIns, addRepayVoucherIns);
             return await this.provider.sendAndConfirm(transaction, [operator, mint]);

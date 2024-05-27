@@ -169,6 +169,11 @@ export type VoucherNft = {
                     isSigner: false;
                 },
                 {
+                    name: 'repayVoucher';
+                    isMut: true;
+                    isSigner: false;
+                },
+                {
                     name: 'tokenMetadataProgram';
                     isMut: false;
                     isSigner: false;
@@ -179,7 +184,14 @@ export type VoucherNft = {
                     isSigner: false;
                 },
             ];
-            args: [];
+            args: [
+                {
+                    name: 'params';
+                    type: {
+                        defined: 'AddRepayVoucherParams';
+                    };
+                },
+            ];
         },
     ];
     accounts: [
@@ -246,7 +258,7 @@ export type VoucherNft = {
                 fields: [
                     {
                         name: 'discountPercentage';
-                        type: 'u8';
+                        type: 'u16';
                     },
                     {
                         name: 'maximumAmount';
@@ -279,6 +291,30 @@ export type VoucherNft = {
         },
     ];
     types: [
+        {
+            name: 'AddRepayVoucherParams';
+            type: {
+                kind: 'struct';
+                fields: [
+                    {
+                        name: 'discountPercentage';
+                        type: 'u16';
+                    },
+                    {
+                        name: 'maximumAmount';
+                        type: 'u32';
+                    },
+                    {
+                        name: 'startTime';
+                        type: 'i64';
+                    },
+                    {
+                        name: 'endTime';
+                        type: 'i64';
+                    },
+                ];
+            };
+        },
         {
             name: 'MetadataParams';
             type: {
@@ -496,6 +532,11 @@ export const IDL: VoucherNft = {
                     isSigner: false,
                 },
                 {
+                    name: 'repayVoucher',
+                    isMut: true,
+                    isSigner: false,
+                },
+                {
                     name: 'tokenMetadataProgram',
                     isMut: false,
                     isSigner: false,
@@ -506,7 +547,14 @@ export const IDL: VoucherNft = {
                     isSigner: false,
                 },
             ],
-            args: [],
+            args: [
+                {
+                    name: 'params',
+                    type: {
+                        defined: 'AddRepayVoucherParams',
+                    },
+                },
+            ],
         },
     ],
     accounts: [
@@ -573,7 +621,7 @@ export const IDL: VoucherNft = {
                 fields: [
                     {
                         name: 'discountPercentage',
-                        type: 'u8',
+                        type: 'u16',
                     },
                     {
                         name: 'maximumAmount',
@@ -606,6 +654,30 @@ export const IDL: VoucherNft = {
         },
     ],
     types: [
+        {
+            name: 'AddRepayVoucherParams',
+            type: {
+                kind: 'struct',
+                fields: [
+                    {
+                        name: 'discountPercentage',
+                        type: 'u16',
+                    },
+                    {
+                        name: 'maximumAmount',
+                        type: 'u32',
+                    },
+                    {
+                        name: 'startTime',
+                        type: 'i64',
+                    },
+                    {
+                        name: 'endTime',
+                        type: 'i64',
+                    },
+                ],
+            },
+        },
         {
             name: 'MetadataParams',
             type: {

@@ -2,19 +2,21 @@ import * as anchor from '@project-serum/anchor';
 import * as token from '@solana/spl-token';
 import * as assert from 'assert';
 import { VoucherNftFixture, VoucherNftFixtureBuilder } from '../sdk/src/voucher-nft-fixture';
-import { MetadataParams, NetworkType } from '../sdk/src/types';
+import { MetadataParams, NetworkType, RepayVoucherInformationParams } from '../sdk/src/types';
 import { airdrop } from '../sdk/src/utils';
 import { Metadata } from '@renec-foundation/mpl-token-metadata';
 import { SendTransactionError } from '@solana/web3.js';
 import { addRepayVoucherIx, mintVoucherIx, modifyComputeUnitIx } from '../sdk/src/instructions';
 import { Constants } from '../sdk/src/constants';
 import { createMasterEdition, createMetadataV2, createNftMint } from './token-utils';
+import { BN } from '@project-serum/anchor';
 
 describe('mint-repay-voucher', () => {
     let fixture: VoucherNftFixture;
     let operator: anchor.web3.Keypair;
     let vaultSeed: string;
     let metadataParams: MetadataParams;
+    let repayVoucherInformationParams: RepayVoucherInformationParams;
 
     before(async () => {
         const fixtureBuilder = new VoucherNftFixtureBuilder().withNetwork(NetworkType.LocalNet);
@@ -25,6 +27,12 @@ describe('mint-repay-voucher', () => {
             name: 'Voucher',
             symbol: 'VC',
             uri: 'Voucher_URI',
+        };
+        repayVoucherInformationParams = {
+            discountPercentage: 100,
+            endTime: new BN(2000),
+            maximumAmount: 1000,
+            startTime: new BN(1000),
         };
         await airdrop(fixture.provider.connection, operator.publicKey, 100);
     });
@@ -56,7 +64,13 @@ describe('mint-repay-voucher', () => {
         const { key: metadata } = await fixture.pda.metadata(mint.publicKey);
         const { key: masterEdition } = await fixture.pda.masterEdition(mint.publicKey);
         const { key: authority } = await fixture.pda.authorator();
-        const tx = await fixture.mintVoucherRepay(vaultSeed, operator, mint, metadataParams);
+        const tx = await fixture.mintVoucherRepay(
+            vaultSeed,
+            operator,
+            mint,
+            metadataParams,
+            repayVoucherInformationParams
+        );
         console.log('Mint repay voucher success at tx', tx);
 
         const mintData = await token.getMint(fixture.connection, mint.publicKey);
@@ -99,6 +113,7 @@ describe('mint-repay-voucher', () => {
         const fakeMetadata = anchor.web3.Keypair.generate().publicKey;
         const mint = anchor.web3.Keypair.generate();
         const { key: vault } = fixture.pda.vault(vaultSeed);
+        const { key: repayVoucher } = fixture.pda.repayVoucher(mint.publicKey);
         const { key: metadata } = await fixture.pda.metadata(mint.publicKey);
         const { key: masterEdition } = await fixture.pda.masterEdition(mint.publicKey);
         const { key: authorator } = await fixture.pda.authorator();
@@ -124,6 +139,8 @@ describe('mint-repay-voucher', () => {
             operator: operator.publicKey,
             tokenMetadataProgram: Constants.TOKEN_METADATA_PROGRAM,
             vault,
+            repayVoucher,
+            params: repayVoucherInformationParams,
         });
         const transaction = new anchor.web3.Transaction().add(
             modifyComputationUnit,
@@ -144,6 +161,7 @@ describe('mint-repay-voucher', () => {
         const mint = anchor.web3.Keypair.generate();
         await createNftMint(fixture.provider, mint, operator);
         const { key: vault } = fixture.pda.vault(vaultSeed);
+        const { key: repayVoucher } = fixture.pda.repayVoucher(mint.publicKey);
         const { key: metadata } = await fixture.pda.metadata(mint.publicKey);
         const { key: masterEdition } = await fixture.pda.masterEdition(mint.publicKey);
         const { key: authorator } = await fixture.pda.authorator();
@@ -156,6 +174,8 @@ describe('mint-repay-voucher', () => {
             operator: operator.publicKey,
             tokenMetadataProgram: Constants.TOKEN_METADATA_PROGRAM,
             vault,
+            repayVoucher,
+            params: repayVoucherInformationParams,
         });
         const transaction = new anchor.web3.Transaction().add(modifyComputationUnit, addRepayVoucherIns);
         try {
@@ -172,6 +192,7 @@ describe('mint-repay-voucher', () => {
         const fakeMasterEdition = anchor.web3.Keypair.generate().publicKey;
         const mint = anchor.web3.Keypair.generate();
         const { key: vault } = fixture.pda.vault(vaultSeed);
+        const { key: repayVoucher } = fixture.pda.repayVoucher(mint.publicKey);
         const { key: metadata } = await fixture.pda.metadata(mint.publicKey);
         const { key: masterEdition } = await fixture.pda.masterEdition(mint.publicKey);
         const { key: authorator } = await fixture.pda.authorator();
@@ -197,6 +218,8 @@ describe('mint-repay-voucher', () => {
             operator: operator.publicKey,
             tokenMetadataProgram: Constants.TOKEN_METADATA_PROGRAM,
             vault,
+            repayVoucher,
+            params: repayVoucherInformationParams,
         });
         const transaction = new anchor.web3.Transaction().add(
             modifyComputationUnit,
@@ -219,6 +242,7 @@ describe('mint-repay-voucher', () => {
         await createMetadataV2(fixture.provider, mint, operator);
 
         const { key: vault } = fixture.pda.vault(vaultSeed);
+        const { key: repayVoucher } = fixture.pda.repayVoucher(mint.publicKey);
         const { key: metadata } = await fixture.pda.metadata(mint.publicKey);
         const { key: masterEdition } = await fixture.pda.masterEdition(mint.publicKey);
         const { key: authorator } = await fixture.pda.authorator();
@@ -231,6 +255,8 @@ describe('mint-repay-voucher', () => {
             operator: operator.publicKey,
             tokenMetadataProgram: Constants.TOKEN_METADATA_PROGRAM,
             vault,
+            repayVoucher,
+            params: repayVoucherInformationParams,
         });
         const transaction = new anchor.web3.Transaction().add(modifyComputationUnit, addRepayVoucherIns);
         try {
@@ -250,6 +276,7 @@ describe('mint-repay-voucher', () => {
         await createMasterEdition(fixture.provider, mint, operator);
 
         const { key: vault } = fixture.pda.vault(vaultSeed);
+        const { key: repayVoucher } = fixture.pda.repayVoucher(mint.publicKey);
         const { key: metadata } = await fixture.pda.metadata(mint.publicKey);
         const { key: masterEdition } = await fixture.pda.masterEdition(mint.publicKey);
         const { key: authorator } = await fixture.pda.authorator();
@@ -262,6 +289,8 @@ describe('mint-repay-voucher', () => {
             operator: operator.publicKey,
             tokenMetadataProgram: Constants.TOKEN_METADATA_PROGRAM,
             vault,
+            repayVoucher,
+            params: repayVoucherInformationParams,
         });
         const transaction = new anchor.web3.Transaction().add(modifyComputationUnit, addRepayVoucherIns);
         try {
@@ -282,6 +311,7 @@ describe('mint-repay-voucher', () => {
 
         const { key: vault } = fixture.pda.vault(vaultSeed);
         const { key: metadata } = await fixture.pda.metadata(mint.publicKey);
+        const { key: repayVoucher } = fixture.pda.repayVoucher(mint.publicKey);
         const { key: masterEdition } = await fixture.pda.masterEdition(mint.publicKey);
         const { key: authorator } = await fixture.pda.authorator();
         const modifyComputationUnit = modifyComputeUnitIx();
@@ -293,6 +323,8 @@ describe('mint-repay-voucher', () => {
             operator: operator.publicKey,
             tokenMetadataProgram: Constants.TOKEN_METADATA_PROGRAM,
             vault,
+            repayVoucher,
+            params: repayVoucherInformationParams,
         });
         const transaction = new anchor.web3.Transaction().add(modifyComputationUnit, addRepayVoucherIns);
         try {
@@ -313,6 +345,7 @@ describe('mint-repay-voucher', () => {
         await createMasterEdition(fixture.provider, mint, operator);
 
         const { key: vault } = fixture.pda.vault(vaultSeed);
+        const { key: repayVoucher } = fixture.pda.repayVoucher(mint.publicKey);
         const { key: metadata } = await fixture.pda.metadata(mint.publicKey);
         const { key: masterEdition } = await fixture.pda.masterEdition(mint.publicKey);
         const modifyComputationUnit = modifyComputeUnitIx();
@@ -324,6 +357,8 @@ describe('mint-repay-voucher', () => {
             operator: operator.publicKey,
             tokenMetadataProgram: Constants.TOKEN_METADATA_PROGRAM,
             vault,
+            repayVoucher,
+            params: repayVoucherInformationParams,
         });
         const transaction = new anchor.web3.Transaction().add(modifyComputationUnit, addRepayVoucherIns);
         try {
