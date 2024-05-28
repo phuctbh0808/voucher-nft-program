@@ -101,3 +101,12 @@ export type AddVoucherRepayInstructionParams = {
     tokenMetadataProgram: PublicKey;
     params: RepayVoucherInformationParams;
 };
+
+export type OperatorAirdropToUserInstructionParams = {
+    vault: PublicKey;
+    operator: PublicKey;
+    user: PublicKey;
+    mint: PublicKey;
+    vaultTokenAccount: PublicKey;
+    userTokenAccount: PublicKey;
+};

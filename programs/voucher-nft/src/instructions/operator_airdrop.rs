@@ -71,7 +71,7 @@ pub fn handler(ctx: Context<OperatorAirdrop>) -> ProgramResult {
                 to: ctx.accounts.user_token_account.to_account_info(),
                 authority: ctx.accounts.vault.to_account_info(),
             },
-            &[&[Vault::SEED.as_bytes(), &[vault.bump]]],
+            &[&[Vault::SEED.as_bytes(), vault.seed.as_bytes(), &[vault.bump]]],
         ),
         1,
     )?;

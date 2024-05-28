@@ -11,7 +11,7 @@ import {
 } from './types';
 import { getKeypairFromFile } from '@solana-developers/helpers';
 import { PDA } from './pda';
-import { addRepayVoucherIx, addVaultIx, mintVoucherIx, modifyComputeUnitIx } from './instructions';
+import { addRepayVoucherIx, addVaultIx, airdropToUserIx, mintVoucherIx, modifyComputeUnitIx } from './instructions';
 import { Keypair, PublicKey } from '@solana/web3.js';
 import { Constants } from './constants';
 
@@ -138,6 +138,27 @@ export class VoucherNftFixture {
             });
             const transaction = new anchor.web3.Transaction().add(modifyUnitIns, mintVoucherIns, addRepayVoucherIns);
             return await this.provider.sendAndConfirm(transaction, [operator, mint]);
+        } catch (error) {
+            this.verbose && console.error(error);
+            throw error;
+        }
+    }
+
+    async operatorAirdrop(seed: string, operator: Keypair, mint: PublicKey, user: PublicKey) {
+        try {
+            const { key: vault } = this.pda.vault(seed);
+            const userTokenAccount = await token.getAssociatedTokenAddress(mint, user, false);
+            const vaultTokenAccount = await token.getAssociatedTokenAddress(mint, vault, true);
+            const operatorAirdropIns = await airdropToUserIx(this.program, {
+                mint: mint,
+                operator: operator.publicKey,
+                user,
+                userTokenAccount: userTokenAccount,
+                vault: vault,
+                vaultTokenAccount: vaultTokenAccount,
+            });
+            const transaction = new anchor.web3.Transaction().add(operatorAirdropIns);
+            return await this.provider.sendAndConfirm(transaction, [operator]);
         } catch (error) {
             this.verbose && console.error(error);
             throw error;
