@@ -4,6 +4,7 @@ import {
     AddVaultInstructionParams,
     MintVoucherInstructionParams,
     VoucherNftType,
+    OperatorAirdropToUserInstructionParams,
 } from './types';
 import { ComputeBudgetProgram } from '@solana/web3.js';
 
@@ -50,6 +51,24 @@ export async function addRepayVoucherIx(program: Program<VoucherNftType>, params
             masterEdition: params.masterEdition,
             repayVoucher: params.repayVoucher,
             tokenMetadataProgram: params.tokenMetadataProgram,
+        })
+        .instruction();
+}
+
+export async function airdropToUserIx(
+    program: Program<VoucherNftType>,
+    params: OperatorAirdropToUserInstructionParams
+) {
+    return program.methods
+        .operatorAirdrop()
+        .accounts({
+            vault: params.vault,
+            operator: params.operator,
+            user: params.user,
+            mint: params.mint,
+            masterEdition: params.masterEdition,
+            vaultTokenAccount: params.vaultTokenAccount,
+            userTokenAccount: params.userTokenAccount,
         })
         .instruction();
 }
