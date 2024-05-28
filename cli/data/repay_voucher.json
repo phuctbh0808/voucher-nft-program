@@ -1,0 +1,9 @@
+{
+  "name": "Repay Voucher",
+  "symbol": "REPV",
+  "description": "10% discount repay, max 30 usd",
+  "startTime": "30/05/2024 00:00",
+  "endTime": "02/06/2024 00:00",
+  "discountPercentage": 10,
+  "maxDiscount": 30
+}
