@@ -5,8 +5,10 @@ import { VoucherNftFixture, VoucherNftFixtureBuilder } from '../sdk/src/voucher-
 import { MetadataParams, NetworkType, RepayVoucherInformationParams } from '../sdk/src/types';
 import { airdrop, getCurrentBlockTime } from '../sdk/src/utils';
 import { Metadata } from '@renec-foundation/mpl-token-metadata';
-import { Keypair } from '@solana/web3.js';
+import { Keypair, SendTransactionError } from '@solana/web3.js';
 import { BN } from '@project-serum/anchor';
+import { airdropToUserIx } from '../sdk/src/instructions';
+import { createNftMint } from './token-utils';
 
 describe('operator-airdrop', () => {
     let fixture: VoucherNftFixture;
@@ -127,6 +129,61 @@ describe('operator-airdrop', () => {
             'Repay voucher authorator mismatch'
         );
         assert.equal(repayVoucherData.nftMint.toBase58(), mint.publicKey.toBase58(), 'Repay voucher mint mismatch');
+    });
+
+    it('FAILED OnlyOperator:  Airdrop failed because of wrong operator', async () => {
+        const user = anchor.web3.Keypair.generate();
+        const fakeOperator = anchor.web3.Keypair.generate();
+        await airdrop(fixture.connection, fakeOperator.publicKey, 100);
+        try {
+            await fixture.operatorAirdrop(vaultSeed, fakeOperator, mint.publicKey, user.publicKey);
+            await assert.fail('Airdrop should fail');
+        } catch (error) {
+            assert.ok(error instanceof SendTransactionError);
+            assert.ok(error.logs.some((log) => log.includes('Custom program error: 0x1771')));
+        }
+    });
+
+    it('FAILED InvalidAccountArgument:  Airdrop failed because of wrong master edition address', async () => {
+        const user = anchor.web3.Keypair.generate();
+        const userTokenAccount = await token.getAssociatedTokenAddress(mint.publicKey, user.publicKey, false);
+        const { key: vault } = fixture.pda.vault(vaultSeed);
+        const vaultTokenAccount = await token.getAssociatedTokenAddress(mint.publicKey, vault, true);
+        const fakeMasterEdition = anchor.web3.Keypair.generate();
+        try {
+            const airdropIns = await airdropToUserIx(fixture.program, {
+                masterEdition: fakeMasterEdition.publicKey,
+                mint: mint.publicKey,
+                operator: operator.publicKey,
+                user: user.publicKey,
+                userTokenAccount: userTokenAccount,
+                vault: vault,
+                vaultTokenAccount: vaultTokenAccount,
+            });
+            const transaction = new anchor.web3.Transaction().add(airdropIns);
+            await fixture.provider.sendAndConfirm(transaction, [operator]);
+            await assert.fail('Airdrop should fail');
+        } catch (error) {
+            assert.ok(error instanceof SendTransactionError);
+            assert.ok(error.logs.some((log) => log.includes('Invalid master edition account')));
+            assert.ok(error.logs.some((log) => log.includes('Custom program error: 0x1772')));
+        }
+    });
+
+    it('FAILED AccountNotInitialized:  Airdrop failed because of master edition not initialized', async () => {
+        const user = anchor.web3.Keypair.generate();
+        const { key: vault } = fixture.pda.vault(vaultSeed);
+        const newMint = anchor.web3.Keypair.generate();
+        await createNftMint(fixture.provider, newMint, operator);
+        await token.getOrCreateAssociatedTokenAccount(fixture.connection, operator, newMint.publicKey, vault, true);
+        try {
+            await fixture.operatorAirdrop(vaultSeed, operator, newMint.publicKey, user.publicKey);
+            assert.fail('Airdrop should failed');
+        } catch (error) {
+            assert.ok(error instanceof SendTransactionError);
+            assert.ok(error.logs.some((log) => log.includes('Master edition account not initialized')));
+            assert.ok(error.logs.some((log) => log.includes('Custom program error: 0x1773')));
+        }
     });
 
     it('Airdrop to user success', async () => {

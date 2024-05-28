@@ -213,6 +213,11 @@ export type VoucherNft = {
           "isSigner": false
         },
         {
+          "name": "masterEdition",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
           "name": "vaultTokenAccount",
           "isMut": true,
           "isSigner": false
@@ -651,6 +656,11 @@ export const IDL: VoucherNft = {
         },
         {
           "name": "mint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "masterEdition",
           "isMut": false,
           "isSigner": false
         },

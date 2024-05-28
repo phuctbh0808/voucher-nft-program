@@ -213,6 +213,11 @@
           "isSigner": false
         },
         {
+          "name": "masterEdition",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
           "name": "vaultTokenAccount",
           "isMut": true,
           "isSigner": false

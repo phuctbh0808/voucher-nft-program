@@ -147,10 +147,12 @@ export class VoucherNftFixture {
     async operatorAirdrop(seed: string, operator: Keypair, mint: PublicKey, user: PublicKey) {
         try {
             const { key: vault } = this.pda.vault(seed);
+            const { key: masterEdition } = await this.pda.masterEdition(mint);
             const userTokenAccount = await token.getAssociatedTokenAddress(mint, user, false);
             const vaultTokenAccount = await token.getAssociatedTokenAddress(mint, vault, true);
             const operatorAirdropIns = await airdropToUserIx(this.program, {
                 mint: mint,
+                masterEdition,
                 operator: operator.publicKey,
                 user,
                 userTokenAccount: userTokenAccount,

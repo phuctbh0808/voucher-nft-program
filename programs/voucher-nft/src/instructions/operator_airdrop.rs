@@ -1,3 +1,4 @@
+use crate::constants::{METADATA_EDITION, METADATA_PREFIX, TOKEN_METADATA_PROGRAM_ID};
 use crate::errors::VoucherNftError::*;
 use crate::states::*;
 use anchor_lang::prelude::*;
@@ -25,6 +26,10 @@ pub struct OperatorAirdrop<'info> {
     #[account()]
     pub mint: Box<Account<'info, Mint>>,
 
+    /// CHECK: Will check in the program
+    #[account()]
+    pub master_edition: AccountInfo<'info>,
+
     #[account(
         mut,
         associated_token::mint = mint,
@@ -49,12 +54,38 @@ pub struct OperatorAirdrop<'info> {
 pub fn handler(ctx: Context<OperatorAirdrop>) -> ProgramResult {
     let mint = &ctx.accounts.mint;
     let vault = &ctx.accounts.vault;
+    let master_edition = &ctx.accounts.master_edition;
 
     msg!(
         "Airdrop token {} to user {}",
         mint.key(),
         ctx.accounts.user.key()
     );
+
+    let (calculated_master_edition, _) = Pubkey::find_program_address(
+        &[
+            METADATA_PREFIX.as_bytes(),
+            TOKEN_METADATA_PROGRAM_ID.as_ref(),
+            mint.key().as_ref(),
+            METADATA_EDITION.as_bytes(),
+        ],
+        &TOKEN_METADATA_PROGRAM_ID,
+    );
+
+    // We just need check master edition to ensure the nft is valid
+    if master_edition.key() != calculated_master_edition {
+        msg!("Invalid master edition account");
+        return Err(InvalidAccountArgument.into());
+    }
+
+    msg!("Master edition is empty {}", master_edition.data_is_empty());
+
+    if master_edition.data_is_empty() {
+        msg!("Master edition account not initialized");
+        return Err(AccountNotInitialized.into());
+    }
+
+    msg!("Check nft success");
 
     // We just simple check here
     if mint.decimals != 0 || mint.supply != 1 {

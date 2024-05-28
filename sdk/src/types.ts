@@ -107,6 +107,7 @@ export type OperatorAirdropToUserInstructionParams = {
     operator: PublicKey;
     user: PublicKey;
     mint: PublicKey;
+    masterEdition: PublicKey;
     vaultTokenAccount: PublicKey;
     userTokenAccount: PublicKey;
 };

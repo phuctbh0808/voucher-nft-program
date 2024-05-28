@@ -66,6 +66,7 @@ export async function airdropToUserIx(
             operator: params.operator,
             user: params.user,
             mint: params.mint,
+            masterEdition: params.masterEdition,
             vaultTokenAccount: params.vaultTokenAccount,
             userTokenAccount: params.userTokenAccount,
         })
