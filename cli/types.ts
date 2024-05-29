@@ -11,4 +11,4 @@ export type MetadataInformation = {
     symbol: string;
     description: string;
     uri: string;
-}
+};

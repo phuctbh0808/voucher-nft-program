@@ -110,6 +110,8 @@ describe('mint-voucher', () => {
         assert.equal(metadataData.data.data.creators[1].verified, true, 'Creators 1 must be verified');
         assert.equal(metadataData.data.data.creators[1].share, 100, 'Creators 1 must be 100 share');
 
+        assert.equal(metadataData.data.isMutable, false, 'Metadata must be immutable');
+
         assert.equal(
             metadataData.data.collection.key,
             configData.collection,

@@ -162,7 +162,7 @@ pub fn handler(ctx: Context<MintVoucher>, params: MetadataParams) -> ProgramResu
             Some(creators),
             0,
             true,
-            true,
+            false,
             Some(collection),
             None,
         ),
