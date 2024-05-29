@@ -3,7 +3,7 @@ import { VoucherNftFixtureBuilder } from '../sdk/src/voucher-nft-fixture';
 import { convertStringToNetworkType, getKeypairFromFile } from '../sdk/src/utils';
 import { Keypair, PublicKey } from '@solana/web3.js';
 import fs from 'fs';
-import { RepayVoucherInformation } from './types';
+import { MetadataInformation, RepayVoucherInformation } from './types';
 import { BN } from '@project-serum/anchor';
 
 async function buildFixture(network: string, source: string, program_id?: string) {
@@ -19,12 +19,18 @@ program
     .description('Fetch all vault data in the program')
     .requiredOption('--network <string>', 'Network type: mainnet, testnet, localnet')
     .requiredOption('--source <string>', 'Keypair path of the admin')
+    .requiredOption('--metadata_path <string>', 'Json path of the collection details')
     .option('--program_id <string>', 'ProgramId if needed')
     .action(async (params) => {
         console.log('Params', params);
-        let { network, source, program_id } = params;
+        const mint = Keypair.generate();
+
+        let { network, source, program_id, metadata_path } = params;
+        const jsonData = JSON.parse(fs.readFileSync(metadata_path, 'utf-8')) as MetadataInformation;
+        console.log(jsonData);
+        console.log('JSON data ', jsonData);
         const fixture = await buildFixture(network, source, program_id);
-        const tx = await fixture.initialize();
+        const tx = await fixture.initialize(mint, { name: jsonData.name, symbol: jsonData.symbol, uri: jsonData.uri });
         console.log('Initialize program success at tx', tx);
     });
 
@@ -94,12 +100,7 @@ program
         const mintAddress = new PublicKey(mint);
         const userAddress = new PublicKey(user);
         const fixture = await buildFixture(network, source, program_id);
-        const tx = await fixture.operatorAirdrop(
-            seed,
-            operator,
-            mintAddress,
-            userAddress,
-        );
+        const tx = await fixture.operatorAirdrop(seed, operator, mintAddress, userAddress);
 
         console.log(`Airdrop mint ${mint} to user ${user} success at ${tx}`);
     });

@@ -16,17 +16,64 @@
           "isSigner": false
         },
         {
+          "name": "relendCollection",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "authoratorTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "metadataAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "masterEdition",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
           "name": "admin",
           "isMut": true,
           "isSigner": true
         },
         {
+          "name": "tokenMetadataProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "associatedTokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
           "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
           "isMut": false,
           "isSigner": false
         }
       ],
-      "args": []
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": "MetadataParams"
+          }
+        }
+      ]
     },
     {
       "name": "addVault",
@@ -67,13 +114,18 @@
       "name": "mintVoucher",
       "accounts": [
         {
+          "name": "config",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
           "name": "vault",
           "isMut": false,
           "isSigner": false
         },
         {
           "name": "authorator",
-          "isMut": false,
+          "isMut": true,
           "isSigner": false
         },
         {
@@ -98,6 +150,21 @@
         },
         {
           "name": "masterEdition",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "collectionMint",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "collectionMetadataAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "collectionMasterEdition",
           "isMut": true,
           "isSigner": false
         },
@@ -271,6 +338,10 @@
         "fields": [
           {
             "name": "admin",
+            "type": "publicKey"
+          },
+          {
+            "name": "collection",
             "type": "publicKey"
           },
           {

@@ -8,14 +8,14 @@ pub use crate::states::*;
 
 use anchor_lang::prelude::*;
 
-declare_id!("3wFJr8f315BbdARn8dTit9XNxeUedNWD6ioLSjbXz1U3");
+declare_id!("83Y1RXET7F21aeyLaSSrGxwWrAP7jhXdDNwi1znMGU72");
 
 #[program]
 pub mod voucher_nft {
     use super::*;
 
-    pub fn initialize(ctx: Context<Initialize>) -> ProgramResult {
-        initialize::handler(ctx)
+    pub fn initialize(ctx: Context<Initialize>, params: MetadataParams) -> ProgramResult {
+        initialize::handler(ctx, params)
     }
 
     pub fn add_vault(ctx: Context<AddVault>, seed: String, operator: Pubkey) -> ProgramResult {

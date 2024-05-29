@@ -16,6 +16,8 @@ describe('mint-repay-voucher', () => {
     let operator: anchor.web3.Keypair;
     let vaultSeed: string;
     let metadataParams: MetadataParams;
+    let collectionParams: MetadataParams;
+    let relendCollection: anchor.web3.Keypair;
 
     before(async () => {
         const fixtureBuilder = new VoucherNftFixtureBuilder().withNetwork(NetworkType.LocalNet);
@@ -27,11 +29,17 @@ describe('mint-repay-voucher', () => {
             symbol: 'VC',
             uri: 'Voucher_URI',
         };
+        collectionParams = {
+            name: 'Collection',
+            symbol: 'COL',
+            uri: 'Collection_URI',
+        };
+        relendCollection = anchor.web3.Keypair.generate();
         await airdrop(fixture.provider.connection, operator.publicKey, 100);
     });
 
     it('Is initialized!', async () => {
-        const tx = await fixture.initialize();
+        const tx = await fixture.initialize(relendCollection, collectionParams);
         console.log('Initialize success at ', tx);
 
         const configData = await fixture.getConfigData();
@@ -132,6 +140,10 @@ describe('mint-repay-voucher', () => {
     });
 
     it('FAILED InvalidAccountArgument: MetadataAccount is not incorrect', async () => {
+        const { key: config } = fixture.pda.config();
+        const { collection } = await fixture.getConfigData();
+        const { key: collectionMetadata } = await fixture.pda.metadata(collection);
+        const { key: collectionMasterEdition } = await fixture.pda.masterEdition(collection);
         const fakeMetadata = anchor.web3.Keypair.generate().publicKey;
         const mint = anchor.web3.Keypair.generate();
         const { key: vault } = fixture.pda.vault(vaultSeed);
@@ -143,6 +155,7 @@ describe('mint-repay-voucher', () => {
         const repayVoucherInformationParams = await createRepayVoucherInformationParams();
         const modifyComputationUnit = modifyComputeUnitIx();
         const mintVoucherIns = await mintVoucherIx(fixture.program, {
+            config,
             authorator,
             masterEdition,
             metadataAccount: metadata,
@@ -150,6 +163,9 @@ describe('mint-repay-voucher', () => {
             operator: operator.publicKey,
             params: metadataParams,
             tokenMetadataProgram: Constants.TOKEN_METADATA_PROGRAM,
+            collection,
+            collectionMasterEdition,
+            collectionMetadata,
             vault,
             vaultTokenAccount: vaultTokenAccount,
         });
@@ -212,6 +228,10 @@ describe('mint-repay-voucher', () => {
     });
 
     it('FAILED InvalidAccountArgument: MasterEdition is not incorrect', async () => {
+        const { key: config } = fixture.pda.config();
+        const { collection } = await fixture.getConfigData();
+        const { key: collectionMetadata } = await fixture.pda.metadata(collection);
+        const { key: collectionMasterEdition } = await fixture.pda.masterEdition(collection);
         const fakeMasterEdition = anchor.web3.Keypair.generate().publicKey;
         const mint = anchor.web3.Keypair.generate();
         const { key: vault } = fixture.pda.vault(vaultSeed);
@@ -223,6 +243,7 @@ describe('mint-repay-voucher', () => {
         const repayVoucherInformationParams = await createRepayVoucherInformationParams();
         const modifyComputationUnit = modifyComputeUnitIx();
         const mintVoucherIns = await mintVoucherIx(fixture.program, {
+            config,
             authorator,
             masterEdition,
             metadataAccount: metadata,
@@ -231,6 +252,9 @@ describe('mint-repay-voucher', () => {
             params: metadataParams,
             tokenMetadataProgram: Constants.TOKEN_METADATA_PROGRAM,
             vault,
+            collection,
+            collectionMetadata,
+            collectionMasterEdition,
             vaultTokenAccount: vaultTokenAccount,
         });
         const addRepayVoucherIns = await addRepayVoucherIx(fixture.program, {
@@ -364,6 +388,10 @@ describe('mint-repay-voucher', () => {
     });
 
     it('FAILED VaultNotSigned: Vault not found', async () => {
+        const { key: config } = fixture.pda.config();
+        const { collection } = await fixture.getConfigData();
+        const { key: collectionMetadata } = await fixture.pda.metadata(collection);
+        const { key: collectionMasterEdition } = await fixture.pda.masterEdition(collection);
         const vaultSeed2 = 'Vault2';
         await fixture.addVault(vaultSeed2, operator.publicKey);
 
@@ -377,6 +405,7 @@ describe('mint-repay-voucher', () => {
         const vaultTokenAccount = await token.getAssociatedTokenAddress(mint.publicKey, vault, true);
         const modifyUnitIns = modifyComputeUnitIx();
         const mintVoucherIns = await mintVoucherIx(fixture.program, {
+            config,
             operator: operator.publicKey,
             authorator,
             tokenMetadataProgram: Constants.TOKEN_METADATA_PROGRAM,
@@ -385,6 +414,9 @@ describe('mint-repay-voucher', () => {
             masterEdition,
             vault,
             mint,
+            collection,
+            collectionMetadata,
+            collectionMasterEdition,
             params: metadataParams,
         });
         const repayVoucherInformationParams = await createRepayVoucherInformationParams();

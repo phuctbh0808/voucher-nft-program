@@ -34,17 +34,26 @@ export class VoucherNftFixture {
         this.verbose = verbose;
     }
 
-    async initialize(): Promise<string> {
+    async initialize(relendMint: Keypair, collectionParams: MetadataParams): Promise<string> {
         const { key: config } = this.pda.config();
         const { key: authorator } = this.pda.authorator();
+        const { key: metadata } = await this.pda.metadata(relendMint.publicKey);
+        const { key: masterEdition } = await this.pda.masterEdition(relendMint.publicKey);
+        const authoratorTokenAccount = await token.getAssociatedTokenAddress(relendMint.publicKey, authorator, true);
         try {
             return await this.program.methods
-                .initialize()
+                .initialize(collectionParams)
                 .accounts({
                     config,
                     authorator,
                     admin: this.provider.publicKey,
+                    relendCollection: relendMint.publicKey,
+                    metadataAccount: metadata,
+                    authoratorTokenAccount,
+                    masterEdition,
+                    tokenMetadataProgram: Constants.TOKEN_METADATA_PROGRAM,
                 })
+                .signers([relendMint])
                 .rpc();
         } catch (error) {
             this.verbose && console.error(error);
@@ -74,13 +83,18 @@ export class VoucherNftFixture {
 
     async mintVoucher(seed: string, operator: Keypair, mint: Keypair, params: MetadataParams): Promise<string> {
         try {
+            const { collection: collectionMint } = await this.getConfigData();
+            const { key: collectionMetadata } = await this.pda.metadata(collectionMint);
+            const { key: collectionMasterEdition } = await this.pda.masterEdition(collectionMint);
             const { key: metadataAccount } = await this.pda.metadata(mint.publicKey);
             const { key: masterEdition } = await this.pda.masterEdition(mint.publicKey);
             const { key: authorator } = this.pda.authorator();
             const { key: vault } = this.pda.vault(seed);
+            const { key: config } = this.pda.config();
             const vaultTokenAccount = await token.getAssociatedTokenAddress(mint.publicKey, vault, true);
             const modifyUnitIns = modifyComputeUnitIx();
             const mintVoucherIns = await mintVoucherIx(this.program, {
+                config,
                 operator: operator.publicKey,
                 authorator,
                 tokenMetadataProgram: Constants.TOKEN_METADATA_PROGRAM,
@@ -89,6 +103,9 @@ export class VoucherNftFixture {
                 masterEdition,
                 vault: vault,
                 mint,
+                collection: collectionMint,
+                collectionMetadata,
+                collectionMasterEdition,
                 params,
             });
             const transaction = new anchor.web3.Transaction().add(modifyUnitIns, mintVoucherIns);
@@ -107,14 +124,19 @@ export class VoucherNftFixture {
         repayVoucherInformationParams: RepayVoucherInformationParams
     ): Promise<string> {
         try {
+            const { collection: collectionMint } = await this.getConfigData();
+            const { key: collectionMetadata } = await this.pda.metadata(collectionMint);
+            const { key: collectionMasterEdition } = await this.pda.masterEdition(collectionMint);
             const { key: metadataAccount } = await this.pda.metadata(mint.publicKey);
             const { key: masterEdition } = await this.pda.masterEdition(mint.publicKey);
             const { key: authorator } = this.pda.authorator();
             const { key: vault } = this.pda.vault(seed);
+            const { key: config } = this.pda.config();
             const { key: repayVoucher } = this.pda.repayVoucher(mint.publicKey);
             const vaultTokenAccount = await token.getAssociatedTokenAddress(mint.publicKey, vault, true);
             const modifyUnitIns = modifyComputeUnitIx();
             const mintVoucherIns = await mintVoucherIx(this.program, {
+                config,
                 operator: operator.publicKey,
                 authorator,
                 tokenMetadataProgram: Constants.TOKEN_METADATA_PROGRAM,
@@ -123,6 +145,9 @@ export class VoucherNftFixture {
                 masterEdition,
                 vault,
                 mint,
+                collection: collectionMint,
+                collectionMetadata,
+                collectionMasterEdition,
                 params: metadataParams,
             });
             const addRepayVoucherIns = await addRepayVoucherIx(this.program, {
