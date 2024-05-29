@@ -15,6 +15,8 @@ describe('operator-airdrop', () => {
     let operator: anchor.web3.Keypair;
     let vaultSeed: string;
     let metadataParams: MetadataParams;
+    let collectionParams: MetadataParams;
+    let relendCollection: Keypair;
     let mint: anchor.web3.Keypair;
 
     before(async () => {
@@ -27,12 +29,18 @@ describe('operator-airdrop', () => {
             symbol: 'VC',
             uri: 'Voucher_URI',
         };
+        collectionParams = {
+            name: 'Collection',
+            symbol: 'COL',
+            uri: 'Collection_URI',
+        };
+        relendCollection = Keypair.generate();
         await airdrop(fixture.provider.connection, operator.publicKey, 100);
         mint = Keypair.generate();
     });
 
     it('Is initialized!', async () => {
-        const tx = await fixture.initialize();
+        const tx = await fixture.initialize(relendCollection, collectionParams);
         console.log('Initialize success at ', tx);
 
         const configData = await fixture.getConfigData();

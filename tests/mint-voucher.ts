@@ -5,13 +5,15 @@ import { VoucherNftFixture, VoucherNftFixtureBuilder } from '../sdk/src/voucher-
 import { MetadataParams, NetworkType } from '../sdk/src/types';
 import { airdrop } from '../sdk/src/utils';
 import { Metadata } from '@renec-foundation/mpl-token-metadata';
-import { SendTransactionError } from '@solana/web3.js';
+import { Keypair, SendTransactionError } from '@solana/web3.js';
 
 describe('mint-voucher', () => {
     let fixture: VoucherNftFixture;
     let operator: anchor.web3.Keypair;
     let vaultSeed: string;
     let metadataParams: MetadataParams;
+    let collectionParams: MetadataParams;
+    let relendCollection: Keypair;
 
     before(async () => {
         const fixtureBuilder = new VoucherNftFixtureBuilder().withNetwork(NetworkType.LocalNet);
@@ -23,11 +25,17 @@ describe('mint-voucher', () => {
             symbol: 'VC',
             uri: 'Voucher_URI',
         };
+        collectionParams = {
+            name: 'Collection',
+            symbol: 'COL',
+            uri: 'Collection_URI',
+        };
+        relendCollection = Keypair.generate();
         await airdrop(fixture.provider.connection, operator.publicKey, 100);
     });
 
     it('Is initialized!', async () => {
-        const tx = await fixture.initialize();
+        const tx = await fixture.initialize(relendCollection, collectionParams);
         console.log('Initialize success at ', tx);
 
         const configData = await fixture.getConfigData();
