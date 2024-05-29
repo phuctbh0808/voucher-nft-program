@@ -92,6 +92,21 @@ program
         console.log(vaults);
     });
 
+program
+    .command('fetch-repay-voucher')
+    .description('Fetch all vault data in the program')
+    .requiredOption('--network <string>', 'Network type: mainnet, testnet, localnet')
+    .requiredOption('--source <string>', 'Keypair path')
+    .option('--program_id <string>', 'ProgramId if needed')
+    .action(async (params) => {
+        console.log('Params', params);
+        let { network, source, program_id } = params;
+        const fixture = await buildFixture(network, source, program_id);
+        const repayVouchers = await fixture.program.account.repayVoucher.all();
+        console.log('Repay voucher is:');
+        console.log(repayVouchers);
+    });
+
 program.parse();
 
 function convertDateStringToUnixTimeSecond(dateString: string) {
