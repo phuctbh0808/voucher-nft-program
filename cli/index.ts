@@ -77,6 +77,32 @@ program
 
         console.log(`Create repay voucher mint ${mint.publicKey} success at ${tx}`);
     });
+
+program
+    .command('airdrop-voucher')
+    .description('Airdrop voucher to the user')
+    .requiredOption('--network <string>', 'Network type: mainnet, testnet, localnet')
+    .requiredOption('--source <string>', 'Keypair path of the operator')
+    .option('--program_id <string>', 'ProgramId if needed')
+    .requiredOption('--seed <string>', 'Seed of the vault')
+    .requiredOption('--mint <string>', 'Address of the user who receives the airdrop')
+    .requiredOption('--user <string>', 'Mint address of the nft')
+    .action(async (params) => {
+        console.log('Params', params);
+        let { network, source, program_id, seed, user, mint } = params;
+        const operator = await getKeypairFromFile(source);
+        const mintAddress = new PublicKey(mint);
+        const userAddress = new PublicKey(user);
+        const fixture = await buildFixture(network, source, program_id);
+        const tx = await fixture.operatorAirdrop(
+            seed,
+            operator,
+            mintAddress,
+            userAddress,
+        );
+
+        console.log(`Airdrop mint ${mint} to user ${user} success at ${tx}`);
+    });
 program
     .command('fetch-vault')
     .description('Fetch all vault data in the program')
