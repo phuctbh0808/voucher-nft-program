@@ -8,7 +8,7 @@ pub use crate::states::*;
 
 use anchor_lang::prelude::*;
 
-declare_id!("3wFJr8f315BbdARn8dTit9XNxeUedNWD6ioLSjbXz1U3");
+declare_id!("83Y1RXET7F21aeyLaSSrGxwWrAP7jhXdDNwi1znMGU72");
 
 #[program]
 pub mod voucher_nft {
