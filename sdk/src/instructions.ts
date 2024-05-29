@@ -23,6 +23,7 @@ export async function mintVoucherIx(program: Program<VoucherNftType>, params: Mi
     return program.methods
         .mintVoucher({ name: params.params.name, symbol: params.params.symbol, uri: params.params.uri })
         .accounts({
+            config: params.config,
             vault: params.vault,
             operator: params.operator,
             authorator: params.authorator,
@@ -30,6 +31,9 @@ export async function mintVoucherIx(program: Program<VoucherNftType>, params: Mi
             metadataAccount: params.metadataAccount,
             masterEdition: params.masterEdition,
             mint: params.mint.publicKey,
+            collectionMint: params.collection,
+            collectionMetadataAccount: params.collectionMetadata,
+            collectionMasterEdition: params.collectionMasterEdition,
             tokenMetadataProgram: params.tokenMetadataProgram,
         })
         .instruction();

@@ -5,12 +5,19 @@ use anchor_lang::prelude::*;
 use anchor_spl::associated_token::AssociatedToken;
 use anchor_spl::token::{self, Mint, MintTo, Token, TokenAccount};
 use mpl_token_metadata::instruction::{
-    create_master_edition_v3, create_metadata_accounts_v2, sign_metadata,
+    create_master_edition_v3, create_metadata_accounts_v2, sign_metadata, verify_collection,
 };
+use mpl_token_metadata::state::Collection;
 use solana_program::program::invoke_signed;
 
 #[derive(Accounts)]
 pub struct MintVoucher<'info> {
+    #[account(
+        seeds = [Config::SEED.as_bytes()],
+        bump,
+    )]
+    pub config: Box<Account<'info, Config>>,
+
     #[account(
         seeds = [Vault::SEED.as_bytes(), vault.seed.as_bytes()],
         bump,
@@ -18,6 +25,7 @@ pub struct MintVoucher<'info> {
     pub vault: Box<Account<'info, Vault>>,
 
     #[account(
+        mut,
         seeds = [Authorator::SEED.as_bytes()],
         bump,
     )]
@@ -54,6 +62,20 @@ pub struct MintVoucher<'info> {
     #[account(mut)]
     pub master_edition: AccountInfo<'info>,
 
+    #[account(
+        mut,
+        address = config.collection,
+    )]
+    pub collection_mint: Box<Account<'info, Mint>>,
+
+    /// CHECK: Token_metadata_program will check this
+    #[account(mut)]
+    pub collection_metadata_account: AccountInfo<'info>,
+
+    /// CHECK: Token_metadata_program will check this
+    #[account(mut)]
+    pub collection_master_edition: AccountInfo<'info>,
+
     /// CHECK: The RENEC token metadata program
     #[account(
         address = TOKEN_METADATA_PROGRAM_ID,
@@ -75,10 +97,10 @@ pub struct MetadataParams {
 pub fn handler(ctx: Context<MintVoucher>, params: MetadataParams) -> ProgramResult {
     let vault = &ctx.accounts.vault;
     let mint = &ctx.accounts.mint;
-    let operator = &ctx.accounts.operator;
     let authorator = &ctx.accounts.authorator;
-    let metadata_account = &ctx.accounts.metadata_account;
     let token_metadata_program = &ctx.accounts.token_metadata_program;
+    let metadata_account = &mut ctx.accounts.metadata_account;
+    let operator = &mut ctx.accounts.operator;
     msg!(
         "Minting voucher NFT {} with vault {}",
         mint.key(),
@@ -122,7 +144,10 @@ pub fn handler(ctx: Context<MintVoucher>, params: MetadataParams) -> ProgramResu
             share: 100,
         },
     ];
-
+    let collection = Collection {
+        verified: false,
+        key: ctx.accounts.collection_mint.key(),
+    };
     invoke_signed(
         &create_metadata_accounts_v2(
             token_metadata_program.key(),
@@ -138,7 +163,7 @@ pub fn handler(ctx: Context<MintVoucher>, params: MetadataParams) -> ProgramResu
             0,
             true,
             true,
-            None,
+            Some(collection),
             None,
         ),
         metadata_account_infos.as_slice(),
@@ -189,5 +214,31 @@ pub fn handler(ctx: Context<MintVoucher>, params: MetadataParams) -> ProgramResu
     )?;
     msg!("Master Edition created");
 
+    msg!("Verifying nft inside the collection");
+    let verify_collection_infos = vec![
+        token_metadata_program.to_account_info(),
+        metadata_account.to_account_info(),
+        authorator.to_account_info(),
+        operator.to_account_info(),
+        ctx.accounts.collection_mint.to_account_info(),
+        ctx.accounts.collection_metadata_account.to_account_info(),
+        ctx.accounts.collection_master_edition.to_account_info(),
+    ];
+    invoke_signed(
+        &verify_collection(
+            token_metadata_program.key(),
+            metadata_account.key(),
+            authorator.key(),
+            operator.key(),
+            ctx.accounts.collection_mint.key(),
+            ctx.accounts.collection_metadata_account.key(),
+            ctx.accounts.collection_master_edition.key(),
+            None,
+        ),
+        verify_collection_infos.as_slice(),
+        &[&[Authorator::SEED.as_bytes(), &[authorator.bump]]],
+    )?;
+
+    msg!("Verifying nft inside collection success");
     Ok(())
 }

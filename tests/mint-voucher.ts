@@ -77,6 +77,8 @@ describe('mint-voucher', () => {
         const tx = await fixture.mintVoucher(vaultSeed, operator, mint, metadataParams);
         console.log('Add mint success at tx', tx);
 
+        const configData = await fixture.getConfigData();
+
         const mintData = await token.getMint(fixture.connection, mint.publicKey);
         assert.equal(mintData.decimals, 0, 'Decimal must be zero');
         assert.equal(
@@ -107,6 +109,13 @@ describe('mint-voucher', () => {
         assert.equal(metadataData.data.data.creators[1].address, authority.toBase58(), 'Creators 1 must be vault');
         assert.equal(metadataData.data.data.creators[1].verified, true, 'Creators 1 must be verified');
         assert.equal(metadataData.data.data.creators[1].share, 100, 'Creators 1 must be 100 share');
+
+        assert.equal(
+            metadataData.data.collection.key,
+            configData.collection,
+            'Collection key must be equal to config collection'
+        );
+        assert.equal(metadataData.data.collection.verified, true, 'Collection must be verified');
 
         const vaultTokenAccount = await token.getAssociatedTokenAddress(mint.publicKey, vault, true);
         const tokenAccount = await token.getAccount(fixture.connection, vaultTokenAccount);

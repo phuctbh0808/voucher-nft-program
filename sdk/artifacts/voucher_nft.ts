@@ -114,13 +114,18 @@ export type VoucherNft = {
             name: 'mintVoucher';
             accounts: [
                 {
+                    name: 'config';
+                    isMut: false;
+                    isSigner: false;
+                },
+                {
                     name: 'vault';
                     isMut: false;
                     isSigner: false;
                 },
                 {
                     name: 'authorator';
-                    isMut: false;
+                    isMut: true;
                     isSigner: false;
                 },
                 {
@@ -145,6 +150,21 @@ export type VoucherNft = {
                 },
                 {
                     name: 'masterEdition';
+                    isMut: true;
+                    isSigner: false;
+                },
+                {
+                    name: 'collectionMint';
+                    isMut: true;
+                    isSigner: false;
+                },
+                {
+                    name: 'collectionMetadataAccount';
+                    isMut: true;
+                    isSigner: false;
+                },
+                {
+                    name: 'collectionMasterEdition';
                     isMut: true;
                     isSigner: false;
                 },
@@ -603,13 +623,18 @@ export const IDL: VoucherNft = {
             name: 'mintVoucher',
             accounts: [
                 {
+                    name: 'config',
+                    isMut: false,
+                    isSigner: false,
+                },
+                {
                     name: 'vault',
                     isMut: false,
                     isSigner: false,
                 },
                 {
                     name: 'authorator',
-                    isMut: false,
+                    isMut: true,
                     isSigner: false,
                 },
                 {
@@ -634,6 +659,21 @@ export const IDL: VoucherNft = {
                 },
                 {
                     name: 'masterEdition',
+                    isMut: true,
+                    isSigner: false,
+                },
+                {
+                    name: 'collectionMint',
+                    isMut: true,
+                    isSigner: false,
+                },
+                {
+                    name: 'collectionMetadataAccount',
+                    isMut: true,
+                    isSigner: false,
+                },
+                {
+                    name: 'collectionMasterEdition',
                     isMut: true,
                     isSigner: false,
                 },

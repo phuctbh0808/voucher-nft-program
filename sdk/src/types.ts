@@ -72,6 +72,7 @@ export type MetadataParams = {
 };
 
 export type MintVoucherInstructionParams = {
+    config: PublicKey;
     vault: PublicKey;
     operator: PublicKey;
     authorator: PublicKey;
@@ -80,6 +81,9 @@ export type MintVoucherInstructionParams = {
     metadataAccount: PublicKey;
     masterEdition: PublicKey;
     tokenMetadataProgram: PublicKey;
+    collection: PublicKey;
+    collectionMetadata: PublicKey;
+    collectionMasterEdition: PublicKey;
     params: MetadataParams;
 };
 
