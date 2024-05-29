@@ -35,6 +35,12 @@ describe('voucher-nft', () => {
             'expect admin to be provider.publicKey'
         );
 
+        assert.equal(
+            configData.collection.toBase58(),
+            relendCollection.publicKey.toBase58(),
+            'expect relendCollection to be relendCollection.publicKey'
+        );
+
         const { bump } = fixture.pda.authorator();
         const authoratorData = await fixture.getAuthoratorData();
         assert.equal(authoratorData.bump, bump, 'Bump authorator mismatch');
