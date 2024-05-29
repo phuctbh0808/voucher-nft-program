@@ -94,12 +94,7 @@ program
         const mintAddress = new PublicKey(mint);
         const userAddress = new PublicKey(user);
         const fixture = await buildFixture(network, source, program_id);
-        const tx = await fixture.operatorAirdrop(
-            seed,
-            operator,
-            mintAddress,
-            userAddress,
-        );
+        const tx = await fixture.operatorAirdrop(seed, operator, mintAddress, userAddress);
 
         console.log(`Airdrop mint ${mint} to user ${user} success at ${tx}`);
     });

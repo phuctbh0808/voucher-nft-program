@@ -34,17 +34,26 @@ export class VoucherNftFixture {
         this.verbose = verbose;
     }
 
-    async initialize(): Promise<string> {
+    async initialize(relendMint: Keypair, collectionParams: MetadataParams): Promise<string> {
         const { key: config } = this.pda.config();
         const { key: authorator } = this.pda.authorator();
+        const { key: metadata } = await this.pda.metadata(relendMint.publicKey);
+        const { key: masterEdition } = await this.pda.masterEdition(relendMint.publicKey);
+        const authoratorTokenAccount = await token.getAssociatedTokenAddress(relendMint.publicKey, authorator, true);
         try {
             return await this.program.methods
-                .initialize()
+                .initialize(collectionParams)
                 .accounts({
                     config,
                     authorator,
                     admin: this.provider.publicKey,
+                    relendCollection: relendMint.publicKey,
+                    metadataAccount: metadata,
+                    authoratorTokenAccount,
+                    masterEdition,
+                    tokenMetadataProgram: Constants.TOKEN_METADATA_PROGRAM,
                 })
+                .signers([relendMint])
                 .rpc();
         } catch (error) {
             this.verbose && console.error(error);

@@ -2,23 +2,30 @@ import * as anchor from '@project-serum/anchor';
 import * as assert from 'assert';
 import { VoucherNftFixture, VoucherNftFixtureBuilder } from '../sdk/src/voucher-nft-fixture';
 import { SendTransactionError } from '@solana/web3.js';
-import { NetworkType } from '../sdk/src/types';
+import { MetadataParams, NetworkType } from '../sdk/src/types';
 import { airdrop } from '../sdk/src/utils';
 import { addVaultIx } from '../sdk/src/instructions';
 
 describe('voucher-nft', () => {
     let fixture: VoucherNftFixture;
     let operator: anchor.web3.Keypair;
+    let collectionParams: MetadataParams;
 
     before(async () => {
         const fixtureBuilder = new VoucherNftFixtureBuilder().withNetwork(NetworkType.LocalNet);
         fixture = await fixtureBuilder.build();
         operator = anchor.web3.Keypair.generate();
+        collectionParams = {
+            name: 'Collection',
+            symbol: 'COL',
+            uri: 'Collection_URI',
+        };
         await airdrop(fixture.provider.connection, operator.publicKey, 100);
     });
 
     it('Is initialized!', async () => {
-        const tx = await fixture.initialize();
+        const relendCollection = anchor.web3.Keypair.generate();
+        const tx = await fixture.initialize(relendCollection, collectionParams);
         console.log('Initialize success at ', tx);
 
         const configData = await fixture.getConfigData();

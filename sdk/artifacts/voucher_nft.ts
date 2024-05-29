@@ -16,17 +16,64 @@ export type VoucherNft = {
                     isSigner: false;
                 },
                 {
+                    name: 'relendCollection';
+                    isMut: true;
+                    isSigner: true;
+                },
+                {
+                    name: 'authoratorTokenAccount';
+                    isMut: true;
+                    isSigner: false;
+                },
+                {
+                    name: 'metadataAccount';
+                    isMut: true;
+                    isSigner: false;
+                },
+                {
+                    name: 'masterEdition';
+                    isMut: true;
+                    isSigner: false;
+                },
+                {
                     name: 'admin';
                     isMut: true;
                     isSigner: true;
+                },
+                {
+                    name: 'tokenMetadataProgram';
+                    isMut: false;
+                    isSigner: false;
+                },
+                {
+                    name: 'tokenProgram';
+                    isMut: false;
+                    isSigner: false;
+                },
+                {
+                    name: 'associatedTokenProgram';
+                    isMut: false;
+                    isSigner: false;
                 },
                 {
                     name: 'systemProgram';
                     isMut: false;
                     isSigner: false;
                 },
+                {
+                    name: 'rent';
+                    isMut: false;
+                    isSigner: false;
+                },
             ];
-            args: [];
+            args: [
+                {
+                    name: 'params';
+                    type: {
+                        defined: 'MetadataParams';
+                    };
+                },
+            ];
         },
         {
             name: 'addVault';
@@ -274,6 +321,10 @@ export type VoucherNft = {
                         type: 'publicKey';
                     },
                     {
+                        name: 'collection';
+                        type: 'publicKey';
+                    },
+                    {
                         name: 'reserve';
                         type: {
                             array: ['u128', 6];
@@ -454,17 +505,64 @@ export const IDL: VoucherNft = {
                     isSigner: false,
                 },
                 {
+                    name: 'relendCollection',
+                    isMut: true,
+                    isSigner: true,
+                },
+                {
+                    name: 'authoratorTokenAccount',
+                    isMut: true,
+                    isSigner: false,
+                },
+                {
+                    name: 'metadataAccount',
+                    isMut: true,
+                    isSigner: false,
+                },
+                {
+                    name: 'masterEdition',
+                    isMut: true,
+                    isSigner: false,
+                },
+                {
                     name: 'admin',
                     isMut: true,
                     isSigner: true,
+                },
+                {
+                    name: 'tokenMetadataProgram',
+                    isMut: false,
+                    isSigner: false,
+                },
+                {
+                    name: 'tokenProgram',
+                    isMut: false,
+                    isSigner: false,
+                },
+                {
+                    name: 'associatedTokenProgram',
+                    isMut: false,
+                    isSigner: false,
                 },
                 {
                     name: 'systemProgram',
                     isMut: false,
                     isSigner: false,
                 },
+                {
+                    name: 'rent',
+                    isMut: false,
+                    isSigner: false,
+                },
             ],
-            args: [],
+            args: [
+                {
+                    name: 'params',
+                    type: {
+                        defined: 'MetadataParams',
+                    },
+                },
+            ],
         },
         {
             name: 'addVault',
@@ -709,6 +807,10 @@ export const IDL: VoucherNft = {
                 fields: [
                     {
                         name: 'admin',
+                        type: 'publicKey',
+                    },
+                    {
+                        name: 'collection',
                         type: 'publicKey',
                     },
                     {
