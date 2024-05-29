@@ -1,5 +1,0 @@
-{
-  "typescript.tsdk": "node_modules/typescript/lib",
-  "prettier.configPath": ".prettierrc.json",
-  "prettier.useEditorConfig": false,
-}
