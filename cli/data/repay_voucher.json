@@ -1,0 +1,10 @@
+{
+  "name": "Repay Voucher",
+  "symbol": "REPV",
+  "description": "10% discount repay, max 30 usd",
+  "startTime": "30/05/2024 00:00",
+  "endTime": "02/06/2024 00:00",
+  "discountPercentage": 10,
+  "maxDiscount": 30,
+  "uri": "https://gist.githubusercontent.com/anhoangphuc/ee248042707e658e134b7dae9a82ad59/raw/80e1c8fab93c237e467d2b2f0b9a06716b38c167/repay_voucher.json"
+}
