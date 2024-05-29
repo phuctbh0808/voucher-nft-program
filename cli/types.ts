@@ -6,4 +6,6 @@ export type RepayVoucherInformation = {
     endTime: string;
     discountPercentage: number;
     maximumAmount: number;
-}
+    images: string;
+    uri: string;
+};
